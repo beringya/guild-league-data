@@ -19,22 +19,6 @@ builds:
     ldflags:
       - -s -w
 
-dockers_v2:
-  - images:
-      - "ghcr.io/beringya/guild-league-data"
-    tags:
-      - "{{ .Version }}"
-      - latest
-    dockerfile: Dockerfile.goreleaser
-    ids:
-      - nsh-guild-analytics
-    platforms:
-      - linux/amd64
-      - linux/arm64
-    extra_files:
-      - frontend/dist
-      - deployment
-
 archives:
   - id: binary
     ids:
