@@ -81,8 +81,8 @@ sudo REMOVE_DATA=true bash scripts/uninstall.sh
 
 ```env
 APP_VERSION=1.0.0
-REPO_URL=https://github.com/owner/repo.git
-UPDATE_GITHUB_REPO=owner/repo
+REPO_URL=https://github.com/beringya/guild-league-data.git
+UPDATE_GITHUB_REPO=beringya/guild-league-data
 UPDATE_INSTALL_COMMAND=cd /opt/nsh-guild-analytics && sudo bash scripts/install.sh && sudo systemctl restart nsh-guild-analytics
 UPDATE_CHECK_TIMEOUT=3s
 ```
