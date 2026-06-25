@@ -73,6 +73,35 @@ sudo bash scripts/uninstall.sh
 sudo REMOVE_DATA=true bash scripts/uninstall.sh
 ```
 
+## 版本更新提示
+
+登录后，左上角版本徽标会调用 `GET /api/system/version` 检查更新。检测到远程版本高于当前 `APP_VERSION` 时，侧边栏会提示新版本，并提供下载入口、发布页入口和重启更新命令。
+
+推荐直接对接 GitHub Latest Release：
+
+```env
+APP_VERSION=1.0.0
+REPO_URL=https://github.com/owner/repo.git
+UPDATE_GITHUB_REPO=owner/repo
+UPDATE_INSTALL_COMMAND=cd /opt/nsh-guild-analytics && sudo bash scripts/install.sh && sudo systemctl restart nsh-guild-analytics
+UPDATE_CHECK_TIMEOUT=3s
+```
+
+也可以使用自定义 manifest，例如把 `UPDATE_CHECK_URL` 指向 GitHub raw、Gitee raw 或自己的静态文件：
+
+```json
+{
+  "version": "1.0.1",
+  "channel": "stable",
+  "release_url": "https://github.com/owner/repo/releases/tag/v1.0.1",
+  "download_url": "https://github.com/owner/repo/releases/download/v1.0.1/nsh-guild-analytics-v1.0.1.tar.gz",
+  "checksum": "sha256:...",
+  "notes": "更新说明"
+}
+```
+
+如果同时配置了 `UPDATE_GITHUB_REPO` 和 `UPDATE_CHECK_URL`，系统优先读取 GitHub 最新 Release。
+
 ## 样例数据
 
 可使用 `联赛初始数据/` 或 `设计文档/data/sample_battle.csv` 中的 CSV 进行导入预览。导入时选择本帮会后，系统会生成本场职业范围建议并完成分析入库。

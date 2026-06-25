@@ -4,6 +4,21 @@ export interface User {
   force_password_change: boolean
 }
 
+export interface UpdateInfo {
+  current_version: string
+  latest_version: string
+  update_available: boolean
+  channel: string
+  release_url?: string
+  download_url?: string
+  checksum?: string
+  notes?: string
+  install_command?: string
+  source: string
+  checked_at: string
+  error?: string
+}
+
 export interface BattleSummary {
   id: number
   battle_at: string

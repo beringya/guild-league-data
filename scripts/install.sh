@@ -54,6 +54,10 @@ COMPOSE_CMD="$(detect_compose)"
 mkdir -p "$INSTALL_DIR"
 cd "$INSTALL_DIR"
 
+if [ -z "$REPO_URL" ] && [ -f ".env" ]; then
+  REPO_URL="$(grep '^REPO_URL=' .env | cut -d= -f2- || true)"
+fi
+
 if [ -n "$REPO_URL" ]; then
   need_cmd git
   if [ ! -d ".git" ]; then
@@ -76,9 +80,15 @@ POSTGRES_DB_VALUE="$(grep '^POSTGRES_DB=' .env | cut -d= -f2- || true)"
 POSTGRES_DB_VALUE="${POSTGRES_DB_VALUE:-nsh_guild_analytics}"
 POSTGRES_PASSWORD_VALUE="${POSTGRES_PASSWORD:-$(random_secret)}"
 SESSION_SECRET_VALUE="${SESSION_SECRET:-$(random_secret)}"
+APP_VERSION_VALUE="${APP_VERSION:-$(grep '^APP_VERSION=' .env.example | cut -d= -f2- || true)}"
+APP_VERSION_VALUE="${APP_VERSION_VALUE:-1.0.0}"
 
+replace_env APP_VERSION "$APP_VERSION_VALUE"
 replace_env APP_PORT "$APP_PORT"
 replace_env COMPOSE_PROJECT_NAME "$COMPOSE_PROJECT_NAME"
+if [ -n "$REPO_URL" ]; then
+  replace_env REPO_URL "$REPO_URL"
+fi
 replace_env POSTGRES_USER "$POSTGRES_USER_VALUE"
 replace_env POSTGRES_DB "$POSTGRES_DB_VALUE"
 replace_env POSTGRES_PASSWORD "$POSTGRES_PASSWORD_VALUE"

@@ -13,6 +13,8 @@ paths:
     get: {summary: 当前用户}
   /api/auth/change-password:
     post: {summary: 修改管理员密码}
+  /api/system/version:
+    get: {summary: 当前应用版本与远程更新检查结果}
   /api/battles/import/preview:
     post: {summary: 上传并预解析 CSV，识别双方帮会及未配置职业，不入库}
   /api/battles/import/confirm:

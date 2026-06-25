@@ -65,13 +65,20 @@
 - 提供 `scripts/uninstall.sh`，默认保留数据，显式 `REMOVE_DATA=true` 才删除安装目录和 Docker 卷。
 - 提供 `scripts/package.sh`，生成包含源码、前端资源、Docker、Compose、脚本、Gitee 模板和设计文档摘要的发布包。
 
-## 阶段 9：Gitee 与交付规范
+## 阶段 9：版本更新提示
+
+- 左上角版本徽标已显示当前 `APP_VERSION`，登录后自动调用 `GET /api/system/version`。
+- 后端支持 `UPDATE_GITHUB_REPO=owner/repo` 检查 GitHub Latest Release，也支持 `UPDATE_CHECK_URL` 指向自定义 JSON manifest。
+- 检测到远程版本更高时，前端提供下载入口、发布页入口和可复制的服务器重启更新命令。
+- 安装脚本会在重新安装或更新时同步新包中的 `APP_VERSION`，并保留 `REPO_URL` 便于 Git 拉取更新。
+
+## 阶段 10：Gitee 与交付规范
 
 - 补齐并维护 `.gitignore`、`.dockerignore`、`LICENSE`、`CONTRIBUTING.md`、`.gitee/ISSUE_TEMPLATE.zh-CN.md` 和 `.gitee/PULL_REQUEST_TEMPLATE.zh-CN.md`。
 - README 明确技术栈、数据库选择、一键安装、Docker 独立部署和本地未编译运行说明。
 - 交付包不包含 `.env`、数据库文件、上传文件、备份文件、`node_modules`、Go 编译产物或临时日志。
 
-## 阶段 10：验证与验收
+## 阶段 11：验证与验收
 
 - 源码级检查：目录结构、配置项、Docker Compose 服务、安装脚本变量、API 路由、前端页面入口和静态资源引用。
 - 后端测试计划：CSV 清洗、重复表头、样例人数、KDA、参团率、范围建议、综合分、权限与会话。

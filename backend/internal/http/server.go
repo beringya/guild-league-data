@@ -70,6 +70,7 @@ func (s *Server) buildRouter() *gin.Engine {
 	api.POST("/auth/logout", s.requireCSRF(), s.logout)
 	api.GET("/auth/me", s.me)
 	api.POST("/auth/change-password", s.requireCSRF(), s.changePassword)
+	api.GET("/system/version", s.versionInfo)
 	api.POST("/battles/import/preview", s.requireCSRF(), s.importPreview)
 	api.POST("/battles/import/confirm", s.requireCSRF(), s.importConfirm)
 	api.GET("/battles", s.listBattles)
@@ -129,8 +130,12 @@ func (s *Server) health(c *gin.Context) {
 		"app": s.cfg.AppName,
 		"database": dbOK,
 		"redis": redisOK,
-		"version": "1.0.0",
+		"version": s.cfg.AppVersion,
 	})
+}
+
+func (s *Server) versionInfo(c *gin.Context) {
+	c.JSON(http.StatusOK, services.CheckUpdate(c.Request.Context(), s.cfg))
 }
 
 func (s *Server) login(c *gin.Context) {

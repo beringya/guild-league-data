@@ -16,6 +16,7 @@
 | API 接口 | 已完成 | 覆盖设计文档 OpenAPI 轮廓中的登录、导入、比赛、排名、对比、设置、规则、头像、备份接口。 |
 | 前端工程 | 已完成 | Vue 3 + Vite + TypeScript + TailwindCSS，复用设计资源，包含路由、状态、API 客户端和页面。 |
 | 图表与页面 | 已完成 | 登录、概览、个人排名、玩家详情、团内 TOP3、对手对比、团队对比、导入、历史、设置。 |
+| 版本更新提示 | 已完成 | 左上角版本徽标检查 GitHub Release 或自定义 manifest，发现新版本后提供下载和重启更新命令；安装脚本同步 APP_VERSION。 |
 | Docker 部署 | 已完成 | `docker-compose.yml` 默认启动 app/postgres/redis，独立网络和卷，端口默认 18080。 |
 | 自动化安装 | 已完成 | `scripts/install.sh` 自动生成密钥、配置 `.env`、创建 systemd 服务、启动 Compose 并输出运维提示。 |
 | 打包卸载 | 已完成 | `scripts/package.sh` 生成离线包，`scripts/uninstall.sh` 默认保留数据并支持显式清理。 |
@@ -27,6 +28,7 @@
 - `POST /api/auth/login` 成功后设置 HttpOnly Cookie；失败触发限流计数。
 - `GET /api/auth/me` 返回当前管理员信息与是否需要改密。
 - `POST /api/auth/change-password` 修改密码后撤销旧会话。
+- `GET /api/system/version` 返回当前版本、远程最新版本、下载地址和更新状态。
 - `POST /api/battles/import/preview` 只解析和校验 CSV，不入库。
 - `POST /api/battles/import/confirm` 按预览 token 入库并生成分析结果。
 - `GET /api/battles`、`GET /api/battles/{id}`、`DELETE /api/battles/{id}` 管理历史比赛。
@@ -48,6 +50,7 @@
 
 - 登录页能处理首次管理员改密提示、错误提示和加载状态。
 - 主界面固定侧栏包含概览、排名、团内 TOP3、对手对比、团队对比、个人分析、导入、历史、设置。
+- 左上角版本徽标可提示新版本，展开后可下载更新包、打开发布页并复制重启更新命令。
 - 概览页展示最新比赛、双方 KPI、职业结构、优势不足和导入入口。
 - 个人排名页支持单场/多场切换、帮会、职业、分团、搜索、分页和排序。
 - 玩家详情页展示六维雷达、单项贡献、同职业本帮/对手平均、百分位和评分解释。
@@ -60,7 +63,7 @@
 
 ## 部署验收项
 
-- `.env.example` 包含 `APP_PORT`、`GIN_MODE`、`DATABASE_DSN`、`REDIS_ADDR`、`POSTGRES_*`、`SESSION_SECRET` 等必需配置。
+- `.env.example` 包含 `APP_PORT`、`GIN_MODE`、`DATABASE_DSN`、`REDIS_ADDR`、`POSTGRES_*`、`SESSION_SECRET`、`UPDATE_GITHUB_REPO` 等必需配置。
 - `Dockerfile` 使用前端构建阶段、Go 构建阶段和最小运行镜像阶段。
 - `docker-compose.yml` 使用固定项目内服务名 `app`、`postgres`、`redis`，并创建项目专属卷。
 - 安装脚本可在离线包目录执行，不要求宿主机已有 PostgreSQL/Redis。
