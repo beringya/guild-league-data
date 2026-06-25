@@ -1,0 +1,38 @@
+{
+  "required_columns": [
+    "帮会名",
+    "玩家",
+    "等级",
+    "职业",
+    "所在团长",
+    "击败",
+    "助攻",
+    "战备资源",
+    "对玩家伤害",
+    "对建筑伤害",
+    "治疗值",
+    "承受伤害",
+    "重伤",
+    "青灯焚骨",
+    "化羽",
+    "控制"
+  ],
+  "aliases": {
+    "击杀": "击败",
+    "团长": "所在团长",
+    "玩家名": "玩家",
+    "帮会": "帮会名",
+    "拆塔伤害": "对建筑伤害",
+    "玩家伤害": "对玩家伤害",
+    "死亡": "重伤"
+  },
+  "encodings": [
+    "utf-8-sig",
+    "utf-8",
+    "gb18030"
+  ],
+  "repeated_header_detection": {
+    "rule": "row values equal column names on at least 80% of required columns"
+  },
+  "battle_time_filename_regex": "(?P<year>\\d{4})_(?P<month>\\d{2})_(?P<day>\\d{2})_(?P<hour>\\d{2})_(?P<minute>\\d{2})_(?P<second>\\d{2})"
+}

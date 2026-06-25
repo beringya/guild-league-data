@@ -1,0 +1,1182 @@
+{
+  "version": "v1.5-final",
+  "status": "all_requirements_confirmed",
+  "normalization": {
+    "method": "career_metric_range_linear",
+    "formula_higher": "clamp((value-min)/(max-min),0,1)*100",
+    "formula_lower": "clamp((max-value)/(max-min),0,1)*100",
+    "score_range": [
+      0,
+      100
+    ],
+    "range_suggestion": {
+      "first_import_pool": "same_battle_same_career_both_guilds",
+      "large_sample_method": "p05_p95",
+      "large_sample_min_n": 20,
+      "small_sample_method": "min_max_with_margin",
+      "small_sample_margin_ratio": 0.1,
+      "very_small_sample_warning_below_n": 3,
+      "non_negative_floor": 0,
+      "requires_admin_confirmation": true,
+      "published_ranges_are_frozen": true,
+      "new_imports_do_not_auto_update_published_ranges": true,
+      "changes_create_new_version": true,
+      "historical_reanalysis_is_explicit": true
+    },
+    "comparison_percentile_pool": "same_battle_same_career_both_guilds"
+  },
+  "derived_metrics": {
+    "head_ratio": "kda_ratio",
+    "kda_formula": "(kills + assists) / max(deaths, 1)",
+    "participation_rate_formula": "(kills + assists) / guild_total_kills",
+    "player_damage_share_formula": "player_damage / guild_total_player_damage",
+    "building_damage_share_formula": "building_damage / guild_total_building_damage",
+    "player_damage_conversion_rate": "normalized player_damage score under career range / 100",
+    "building_damage_conversion_rate": "normalized building_damage score under career range / 100",
+    "kda_zero_deaths_behavior": "use_denominator_1_and_show_no_death_badge"
+  },
+  "six_dimension_schema": {
+    "required_enabled_slots": 6,
+    "allowed_metrics": [
+      "kills",
+      "assists",
+      "player_damage",
+      "building_damage",
+      "healing",
+      "damage_taken",
+      "qingdeng",
+      "revive",
+      "control",
+      "kda_ratio",
+      "participation_rate"
+    ],
+    "ranking_weight_sum_for_active_profile": 1.0,
+    "zero_weight_slots_are_analysis_only": true
+  },
+  "career_profiles": {
+    "素问": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "healing",
+          "label": "治疗值",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.55
+        },
+        {
+          "slot": 2,
+          "metric": "damage_taken",
+          "label": "承受伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.25
+        },
+        {
+          "slot": 3,
+          "metric": "revive",
+          "label": "化羽",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.2
+        },
+        {
+          "slot": 4,
+          "metric": "assists",
+          "label": "助攻",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "铁衣": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.6
+        },
+        {
+          "slot": 2,
+          "metric": "damage_taken",
+          "label": "承受伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.4
+        },
+        {
+          "slot": 3,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "神相": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "血河": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "damage_taken",
+          "label": "承受伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "沧澜": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "玄机": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "云瑶": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "healing",
+          "label": "治疗值",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "碎梦": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.3
+        },
+        {
+          "slot": 3,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.2
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "assists",
+          "label": "助攻",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "九灵": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "qingdeng",
+          "label": "青灯焚骨",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.6
+        },
+        {
+          "slot": 2,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.2
+        },
+        {
+          "slot": 3,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.2
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "鸿音": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.55
+        },
+        {
+          "slot": 2,
+          "metric": "healing",
+          "label": "治疗值",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.45
+        },
+        {
+          "slot": 3,
+          "metric": "revive",
+          "label": "化羽",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "damage_taken",
+          "label": "承受伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ]
+    },
+    "潮光": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ],
+      "template_reference": "神相"
+    },
+    "荒羽": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ],
+      "template_reference": "神相"
+    },
+    "龙吟": {
+      "status": "confirmed",
+      "ranking_enabled": true,
+      "dimensions": [
+        {
+          "slot": 1,
+          "metric": "player_damage",
+          "label": "对玩家伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 2,
+          "metric": "building_damage",
+          "label": "对建筑伤害",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0.5
+        },
+        {
+          "slot": 3,
+          "metric": "kills",
+          "label": "击败",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 4,
+          "metric": "kda_ratio",
+          "label": "KDA",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 5,
+          "metric": "participation_rate",
+          "label": "参团率",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        },
+        {
+          "slot": 6,
+          "metric": "control",
+          "label": "控制",
+          "enabled": true,
+          "direction": "higher",
+          "range": {
+            "min": null,
+            "max": null,
+            "source": "manual_or_admin_confirmed_suggestion"
+          },
+          "ranking_weight": 0
+        }
+      ],
+      "template_reference": "神相"
+    }
+  },
+  "multi_match_ranking": {
+    "enabled": true,
+    "default_min_matches": 3,
+    "primary_sort": "average_composite_score_desc",
+    "average_formula": "sum(single_match_composite_score)/match_count",
+    "cumulative_contribution_formula": "sum(single_match_composite_score)",
+    "cumulative_contribution_is_default_sort": false,
+    "aggregate_identity": "guild_id + canonical_player_name + career",
+    "show_recent_match_score": true,
+    "show_best_match_score": true,
+    "trend_match_count": 5
+  },
+  "historical_leaderboard": {
+    "included_in_mvp": true,
+    "default_sort": "average_composite_score_desc",
+    "default_min_matches": 3,
+    "auxiliary_metrics": [
+      "match_count",
+      "cumulative_contribution_score",
+      "best_composite_score",
+      "latest_composite_score",
+      "recent_five_match_trend"
+    ],
+    "cumulative_contribution_formula": "sum(composite_score)",
+    "average_score_formula": "sum(composite_score) / match_count",
+    "identity_key_mvp": "guild_id + canonical_player_name",
+    "multi_career_aggregation": "player_plus_career",
+    "mixed_rule_versions_show_warning": true
+  }
+}

@@ -1,0 +1,527 @@
+[
+  {
+    "path": "assets/avatars/mockup_online/NOTICE.md",
+    "bytes": 710,
+    "sha256": "ee3afff914fa20dc3b55a8f2b67ac4e51c36233ff49999062d75d1fff91ce50e"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_01.png",
+    "bytes": 107657,
+    "sha256": "8ca3f5b31426aea804ddb8d811924d5dc0eb1e6fc1a030741abf0a7da63a3885"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_02.png",
+    "bytes": 80436,
+    "sha256": "f15b9a904dfc9e5b632e077f3be3c1f14a62a93f3466cac5ac5358f35412e0a0"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_03.png",
+    "bytes": 92277,
+    "sha256": "a7f1e82e2b3c0204e750dcc0e4f4a6be9b76f94aa467f0770b83952e4caba0aa"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_04.png",
+    "bytes": 90023,
+    "sha256": "8852d117337ebef3409897ffec193465c8967aebbe34defd50e1df8d943497ed"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_05.png",
+    "bytes": 87040,
+    "sha256": "afc8a50e08d0a331171bfdf558defa000081e226dea0e3d6ba4608e260873897"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_06.png",
+    "bytes": 76457,
+    "sha256": "3feb5896d815020fee6cac393c53ff8e6efbaa3b6bd2ea5a663912396ade0eb5"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_07.png",
+    "bytes": 92572,
+    "sha256": "a3c993de9fa64b00c81e826fa811d485581872e7e2ca4ff65bb64ca4735fa58c"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_08.png",
+    "bytes": 87917,
+    "sha256": "6bb54b3627b885e3a1d8c85eb1f2c9e01f2efa7e39b04f62262832c5f05f3e45"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_09.png",
+    "bytes": 94360,
+    "sha256": "d5574eeee2b1e0566671e3cc31e26ca8a2e7cfaf9b4cb32dcb7b50c82f72b06d"
+  },
+  {
+    "path": "assets/avatars/mockup_online/avatar_10.png",
+    "bytes": 90524,
+    "sha256": "34df9f884689e4c1ab6ee5d9a17cef0174ace6b28f6973ed5dafc5a510764c14"
+  },
+  {
+    "path": "assets/backgrounds/png/bg_app.png",
+    "bytes": 194289,
+    "sha256": "c99fea6d147953e9c7df418505c40da1eb5321dd7f54e465f7659572d3de42f1"
+  },
+  {
+    "path": "assets/backgrounds/png/bg_card.png",
+    "bytes": 17203,
+    "sha256": "2ba6b71908a35a07bace3671e23a1591791349be0d43070bf1fd8cd0f37cc513"
+  },
+  {
+    "path": "assets/backgrounds/png/bg_login.png",
+    "bytes": 79548,
+    "sha256": "5ba8dab3f9068f63ce2a080e4614223218a4811772fcb23308689f3bc9f899e6"
+  },
+  {
+    "path": "assets/backgrounds/svg/bg_app.svg",
+    "bytes": 1914,
+    "sha256": "5ee1423076b698b976556a0f0dd116bbc153e4b65a778c317d0a12b4156660ac"
+  },
+  {
+    "path": "assets/backgrounds/svg/bg_card.svg",
+    "bytes": 432,
+    "sha256": "bda0eddc7b591afed2f7ff8925ac190d3bdcb5b3d34efcd02df6ddf8d609c448"
+  },
+  {
+    "path": "assets/backgrounds/svg/bg_login.svg",
+    "bytes": 1751,
+    "sha256": "9b3010dd35407e8035f8b4f24c24f0134d37d368fc597032eb74c973018cd4b1"
+  },
+  {
+    "path": "assets/brand/logo.png",
+    "bytes": 28277,
+    "sha256": "52319ed893e014f36650cf4caf32e5cfed878d6cf0daabe34d512c750969340c"
+  },
+  {
+    "path": "assets/brand/logo.svg",
+    "bytes": 626,
+    "sha256": "d1b3bc03594838b422489552d19ba700ab5185946c7a770f380c99c9b01756c0"
+  },
+  {
+    "path": "assets/brand/mascot_bunny.png",
+    "bytes": 32518,
+    "sha256": "0451a25f6beb3d9423ec14b0b89f2dd43f4997364727fe9d8bd02ef910ca6e1c"
+  },
+  {
+    "path": "assets/brand/mascot_bunny.svg",
+    "bytes": 1065,
+    "sha256": "c1d9a027d5fdc9f487aeca0064a18622caa748621b71b240e71e7c3164acb0bf"
+  },
+  {
+    "path": "assets/icons/png/128/assist.png",
+    "bytes": 1993,
+    "sha256": "c532fc60b909fab7032b220c071a68ca91057ed91cb3b95164956f4e5f291605"
+  },
+  {
+    "path": "assets/icons/png/128/building_damage.png",
+    "bytes": 946,
+    "sha256": "9cc408869f2bfebcb6738e0e9d56ddcd27e8052d497b799b7d7a9abd0b580319"
+  },
+  {
+    "path": "assets/icons/png/128/check.png",
+    "bytes": 2680,
+    "sha256": "bc38181e5c30a7cdef11f1de1d1ba0bb4104fe916dea27f8d437b5831e35e70b"
+  },
+  {
+    "path": "assets/icons/png/128/control.png",
+    "bytes": 1452,
+    "sha256": "2e65682b3332f6e6821299c994c545f12e47fea1d5db816de7b7fc6f6a02b8b8"
+  },
+  {
+    "path": "assets/icons/png/128/damage_taken.png",
+    "bytes": 1706,
+    "sha256": "e470deafb1a8751f0a477e2acd11c49468197b8f2ca2f431cd4bddb9a7d0755d"
+  },
+  {
+    "path": "assets/icons/png/128/download.png",
+    "bytes": 618,
+    "sha256": "a39df2c60cf0bbde1bfbc31c301d71b4407f08219f402ed7e1dac4bfaad32942"
+  },
+  {
+    "path": "assets/icons/png/128/eye.png",
+    "bytes": 2077,
+    "sha256": "1f039247ec5f39d0d2d34fc214b9d44d016eada6739dd8a2d649ff61a16793bb"
+  },
+  {
+    "path": "assets/icons/png/128/heal.png",
+    "bytes": 2450,
+    "sha256": "974d7cb9e8a26052709bf72491e3b37d09d0008306f9e4c151430282a048a4dd"
+  },
+  {
+    "path": "assets/icons/png/128/history.png",
+    "bytes": 2560,
+    "sha256": "3859a84afe1940f789ed68963da7413139eb0c25adef931afa1662d87a1fa041"
+  },
+  {
+    "path": "assets/icons/png/128/home.png",
+    "bytes": 1136,
+    "sha256": "b7cd7db7a0bc0a5452f3a2419be863ec6e21ab619a79aa317ffc7db7c200f8cd"
+  },
+  {
+    "path": "assets/icons/png/128/import.png",
+    "bytes": 675,
+    "sha256": "87d888c3152b52891696655f12deefe3cc39a8138beb8aa1b917340bb324510f"
+  },
+  {
+    "path": "assets/icons/png/128/kda.png",
+    "bytes": 1552,
+    "sha256": "4140d18119038614456b1f2c2bfdc48201899ba61a758c8a1234a28922e5fee4"
+  },
+  {
+    "path": "assets/icons/png/128/kill.png",
+    "bytes": 922,
+    "sha256": "d05b62aa4598e0c259b1719a571294eafa68778eb658330e281f7c712e898026"
+  },
+  {
+    "path": "assets/icons/png/128/lantern.png",
+    "bytes": 1215,
+    "sha256": "4122c3fab817cdb40a909415132fae163e4ac0c3497197ff042061b9d8a346d3"
+  },
+  {
+    "path": "assets/icons/png/128/lock.png",
+    "bytes": 1692,
+    "sha256": "c218af3614ae33bdf610d5e4c2e3ce3285bd30bd3b10b563ed57333c525be333"
+  },
+  {
+    "path": "assets/icons/png/128/logo.png",
+    "bytes": 3457,
+    "sha256": "c9f4de8b5f9c784482fddfe68ba31b2e68f592275c788ba6c406273707b37790"
+  },
+  {
+    "path": "assets/icons/png/128/logout.png",
+    "bytes": 867,
+    "sha256": "73552b701e4b7cc0822c96601bcf8a84d4bf91179c916b3e24e44a8eccf33abb"
+  },
+  {
+    "path": "assets/icons/png/128/opponent.png",
+    "bytes": 1428,
+    "sha256": "e9035f7305125fd8a487024a87c84d79d0921b34ccde588e5774a49fea8cf949"
+  },
+  {
+    "path": "assets/icons/png/128/participation.png",
+    "bytes": 2547,
+    "sha256": "b4ecb7a18b6315af1481a211698cec9c9e295597a2fc8dc566abeec9887a7bd6"
+  },
+  {
+    "path": "assets/icons/png/128/pvp_damage.png",
+    "bytes": 3149,
+    "sha256": "c6621d8266dafc92534c10e415879ee8eadb03422268998b2e3620b6c16a1488"
+  },
+  {
+    "path": "assets/icons/png/128/ranking.png",
+    "bytes": 720,
+    "sha256": "70f953afaad756dab3d1c121d7c42bf396e6b6b9101ca68cd1519caef9a26b9c"
+  },
+  {
+    "path": "assets/icons/png/128/revive.png",
+    "bytes": 2082,
+    "sha256": "3cc396f8468536e390c8e80d5b0899417521eb4d699a07922a81678342ff582c"
+  },
+  {
+    "path": "assets/icons/png/128/score.png",
+    "bytes": 1697,
+    "sha256": "99c7f6cc56a31e8a7f38b7c1dc9844c37f14eff9314c3846707b95634a7fa9c7"
+  },
+  {
+    "path": "assets/icons/png/128/settings.png",
+    "bytes": 2761,
+    "sha256": "b42ba688a017690c16fe191b5dd8b115fff1abf81a825af91588bc6bece9910b"
+  },
+  {
+    "path": "assets/icons/png/128/squads.png",
+    "bytes": 775,
+    "sha256": "0a996847e54f50b22f539244174141c67d7ce5662bec96549d68d81bc1730846"
+  },
+  {
+    "path": "assets/icons/png/128/team_top3.png",
+    "bytes": 2488,
+    "sha256": "6c1ea571e19f9890781bfbe107d51b39ce3e858e635f09e107b54051942187f2"
+  },
+  {
+    "path": "assets/icons/png/128/user.png",
+    "bytes": 1968,
+    "sha256": "d3f123c81f4fd9d01db9d63c895add76e5facc2c96497d4a537850fb6ec6d975"
+  },
+  {
+    "path": "assets/icons/png/128/warning.png",
+    "bytes": 1406,
+    "sha256": "ae699b103b08132ca3d4773e99f031b163ee6f9b58f054c4d225553bd484ce0a"
+  },
+  {
+    "path": "assets/icons/png/64/assist.png",
+    "bytes": 1058,
+    "sha256": "5964230ff6b562e82b10962a26ff843e5f1fb1fed645709798fc6eab9a99f396"
+  },
+  {
+    "path": "assets/icons/png/64/building_damage.png",
+    "bytes": 643,
+    "sha256": "7dac0f57073ba58f4cce090083a3ab2628ecc981a90062b3b95ab760fdeef57a"
+  },
+  {
+    "path": "assets/icons/png/64/check.png",
+    "bytes": 1390,
+    "sha256": "c91b9d56a52f7c43c5c7c749ba3b554649c756363bb4db3761c7c7b2db235dc9"
+  },
+  {
+    "path": "assets/icons/png/64/control.png",
+    "bytes": 853,
+    "sha256": "5c09267079d99610d48ba97a84ec19fbf10b2db73458b0c61e78c03bc325a7f5"
+  },
+  {
+    "path": "assets/icons/png/64/damage_taken.png",
+    "bytes": 933,
+    "sha256": "2df47976749e19bdca7af860df4f7936e9b68e245ebea3d365a017e1f605e5a6"
+  },
+  {
+    "path": "assets/icons/png/64/download.png",
+    "bytes": 417,
+    "sha256": "1c8aaa610c409e35a6df35057c456f8aeed14ae80313ec4e092be8b60293f6fa"
+  },
+  {
+    "path": "assets/icons/png/64/eye.png",
+    "bytes": 1010,
+    "sha256": "3eb3181e59488c1ab7a9cd75f6f258d9c4b489a997108899d4e2649c60924ccc"
+  },
+  {
+    "path": "assets/icons/png/64/heal.png",
+    "bytes": 1288,
+    "sha256": "522a9089a83bc01ee88c84761db1430ff5e36cc2330236597a3086711a7d9d6b"
+  },
+  {
+    "path": "assets/icons/png/64/history.png",
+    "bytes": 1340,
+    "sha256": "326ef161e7b1f635b093800351f72494e0d0f0017b29f490526e259e83fb5377"
+  },
+  {
+    "path": "assets/icons/png/64/home.png",
+    "bytes": 780,
+    "sha256": "d69b2eb2111ca43fdb66bb1e64e0b6edcee5818a8c88f84aee9b34d135eb319b"
+  },
+  {
+    "path": "assets/icons/png/64/import.png",
+    "bytes": 458,
+    "sha256": "50eadb04c9a21703ced88d45e43051ace1c8a7272590edcf00b5ffccc44f3324"
+  },
+  {
+    "path": "assets/icons/png/64/kda.png",
+    "bytes": 961,
+    "sha256": "f9af43fc931b12faaf7a65ab0fb3f6dd2e6216b6d85368d781b43e8c3d40d58c"
+  },
+  {
+    "path": "assets/icons/png/64/kill.png",
+    "bytes": 557,
+    "sha256": "2392e7ea621ba34fe15e2aea4bf38d508dbfe5aab9a4325b911d0c304dd59e38"
+  },
+  {
+    "path": "assets/icons/png/64/lantern.png",
+    "bytes": 756,
+    "sha256": "1fb2b9c535bca188c1567e1fe7873e37632c7a1b42fd47ae0e2db6150a7df877"
+  },
+  {
+    "path": "assets/icons/png/64/lock.png",
+    "bytes": 958,
+    "sha256": "592e1465b67aa718c462db31182f5b76d260d54d17b4227486db017cb1ab2bca"
+  },
+  {
+    "path": "assets/icons/png/64/logo.png",
+    "bytes": 1686,
+    "sha256": "b786f97c29e42c94359230a51d239cfd59aa92ab0867be6a7c27dbdabafb92b2"
+  },
+  {
+    "path": "assets/icons/png/64/logout.png",
+    "bytes": 689,
+    "sha256": "0bd1042c6bce240990f9557c8831669d73b745ea35979a0ab240251b9510bbcd"
+  },
+  {
+    "path": "assets/icons/png/64/opponent.png",
+    "bytes": 862,
+    "sha256": "0ab85884fc5d5389b656978557c0eafc84f6b0f68e79e4692b90378bff2f1f98"
+  },
+  {
+    "path": "assets/icons/png/64/participation.png",
+    "bytes": 1290,
+    "sha256": "9419b1133e177b4e1569df66a93300852a14fb8a0e2bd046919a44b5337d1a66"
+  },
+  {
+    "path": "assets/icons/png/64/pvp_damage.png",
+    "bytes": 1591,
+    "sha256": "9ad9ce1c1e5c5d250b897cad8ec7547bef524dc4ee6430f2afe6fa97401588d7"
+  },
+  {
+    "path": "assets/icons/png/64/ranking.png",
+    "bytes": 501,
+    "sha256": "3549fc17214740ea0e548ab73c20aacc26132d314869ac3b0a8045d694b5d3e2"
+  },
+  {
+    "path": "assets/icons/png/64/revive.png",
+    "bytes": 1221,
+    "sha256": "4238d014f5732eb43db30a4ad03e0523ca1660dff056ba252f9fe49f1ed29e02"
+  },
+  {
+    "path": "assets/icons/png/64/score.png",
+    "bytes": 994,
+    "sha256": "1ab7ea1aea783ab767a04913e0db899806c1ed88fede1751288144cd2618fd38"
+  },
+  {
+    "path": "assets/icons/png/64/settings.png",
+    "bytes": 1403,
+    "sha256": "3f0b2fdefaaf1fb2a30e6efc90633738d892be87007d9682e504bf198f39fbef"
+  },
+  {
+    "path": "assets/icons/png/64/squads.png",
+    "bytes": 427,
+    "sha256": "f6b1df65794008fc9b5f5eb05d7011a272bc10eb21e35d9133cedb90bc6a6ce3"
+  },
+  {
+    "path": "assets/icons/png/64/team_top3.png",
+    "bytes": 1263,
+    "sha256": "5a9353da2d74ba777599bb7072cc1fb87117ef88db0854935c65e038aef9efd2"
+  },
+  {
+    "path": "assets/icons/png/64/user.png",
+    "bytes": 1013,
+    "sha256": "3deb1cba9679c119f70b68e1e95d2d5ace7425c0c7463902789759c84d6ad039"
+  },
+  {
+    "path": "assets/icons/png/64/warning.png",
+    "bytes": 915,
+    "sha256": "43f37b1704e54be8c5bd50ab6ee301e84c9efdb6d52321e01b4fae282080a884"
+  },
+  {
+    "path": "assets/icons/svg/assist.svg",
+    "bytes": 269,
+    "sha256": "355cbbc52a4e85a3188a1c37adb178737b1db800e999135a1434cdde602e0972"
+  },
+  {
+    "path": "assets/icons/svg/building_damage.svg",
+    "bytes": 244,
+    "sha256": "cd6d788ff1adaf28dfda445eccae0b3a8f00bd870005ddaf352eaea5f3d6ca8b"
+  },
+  {
+    "path": "assets/icons/svg/check.svg",
+    "bytes": 224,
+    "sha256": "4f871f58343d4806752a643807db554f12122ce181726d8b0711c9a63aa32e81"
+  },
+  {
+    "path": "assets/icons/svg/control.svg",
+    "bytes": 293,
+    "sha256": "665760b96a7f01180e6562767c81363c9a8497b016aa0e64025e22b6323bbafa"
+  },
+  {
+    "path": "assets/icons/svg/damage_taken.svg",
+    "bytes": 254,
+    "sha256": "1eabe85523e4444985a21cfc87dd5da126d4ad19716d74f529c48e936aa8414e"
+  },
+  {
+    "path": "assets/icons/svg/download.svg",
+    "bytes": 211,
+    "sha256": "72a8a8231a45ee8d7b79fa0d356039eff5cd271acaedee66abf2d5b181b87b50"
+  },
+  {
+    "path": "assets/icons/svg/eye.svg",
+    "bytes": 257,
+    "sha256": "086b77791f2dca7e64d9c58b533f9d0eed50a10de795e5b7ba601bced62af70e"
+  },
+  {
+    "path": "assets/icons/svg/heal.svg",
+    "bytes": 296,
+    "sha256": "41dc490331e4a10b4d0631bdd0cd8e84d721142043f40c61a0b43fa67022eb1b"
+  },
+  {
+    "path": "assets/icons/svg/history.svg",
+    "bytes": 269,
+    "sha256": "1aa221f3ed798d0f5e7ca6c532f9dd52360d54bf6c46883ad0de49bc548ab26c"
+  },
+  {
+    "path": "assets/icons/svg/home.svg",
+    "bytes": 248,
+    "sha256": "d6d6fa9a83868984525f67a7411a6a0704ca6225d65a78109261393f5b7e44bf"
+  },
+  {
+    "path": "assets/icons/svg/import.svg",
+    "bytes": 229,
+    "sha256": "b0a0dd8fccb00d16ed6cae7d612ceeb88af5a514601d0f92a7b44134ef31badb"
+  },
+  {
+    "path": "assets/icons/svg/kda.svg",
+    "bytes": 276,
+    "sha256": "4aae489c61526a0753726d99aee48d9d8159bc3b70932e7f4ecd41196508c148"
+  },
+  {
+    "path": "assets/icons/svg/kill.svg",
+    "bytes": 229,
+    "sha256": "6db1271142e6fb6cfa485ea7118c3c30a1d7ca5ad3924636c2e175042253d35f"
+  },
+  {
+    "path": "assets/icons/svg/lantern.svg",
+    "bytes": 256,
+    "sha256": "765c41f654ef3ea78cd854a83b3f7b60dbc5bfa8a30c01fe1ddf8e844603eb10"
+  },
+  {
+    "path": "assets/icons/svg/lock.svg",
+    "bytes": 315,
+    "sha256": "ede884dc6e498ab9af5ba79c643a604ace2edea3aeca739d29bc93cf0e8a7df9"
+  },
+  {
+    "path": "assets/icons/svg/logo.svg",
+    "bytes": 292,
+    "sha256": "98db190a932b14fa9545ba3e7627c09836d2c49c4a7480873b6a844bc25cb805"
+  },
+  {
+    "path": "assets/icons/svg/logout.svg",
+    "bytes": 230,
+    "sha256": "8ad9a27a2f1772a02a6e241192c32052c8e2adcc4b76537c91433f8bd457d80f"
+  },
+  {
+    "path": "assets/icons/svg/opponent.svg",
+    "bytes": 270,
+    "sha256": "ee360e79766dd7eb8a243134cb67f05286444f881e5d3b0b239f50fcf9d022ae"
+  },
+  {
+    "path": "assets/icons/svg/participation.svg",
+    "bytes": 330,
+    "sha256": "f3a9893e65871e973554d074dcdc7b371027a09ad6f533dffa8d7cf21f90207f"
+  },
+  {
+    "path": "assets/icons/svg/pvp_damage.svg",
+    "bytes": 274,
+    "sha256": "73b8138a19c475d439e5ffe7ae28606cb6028508791ffc4caa084b5f7acf1771"
+  },
+  {
+    "path": "assets/icons/svg/ranking.svg",
+    "bytes": 335,
+    "sha256": "3ce743be4e1757085f80c40e2bccd21b1e22615daa5a26beb918f2060415e531"
+  },
+  {
+    "path": "assets/icons/svg/revive.svg",
+    "bytes": 328,
+    "sha256": "d90a1909167cf9a7fef7e219b8727c89720f7144a6bcfa63b74c08b6eb6db576"
+  },
+  {
+    "path": "assets/icons/svg/score.svg",
+    "bytes": 233,
+    "sha256": "0302415667e5fcfccf77155bb731e53c396196f1d03445797443aaade7bcbc70"
+  },
+  {
+    "path": "assets/icons/svg/settings.svg",
+    "bytes": 311,
+    "sha256": "a655c2066393db2ec3c0d7630363ea364936a1fb58f77c2fca4bbcc24cc463c5"
+  },
+  {
+    "path": "assets/icons/svg/squads.svg",
+    "bytes": 364,
+    "sha256": "5882b5ce424e54d653865e44083d553faa8de09ce3216538f300f78ecce2b88e"
+  },
+  {
+    "path": "assets/icons/svg/team_top3.svg",
+    "bytes": 346,
+    "sha256": "4a093a19ae82364078e01e4c7de48efe5b214b6e65fcc5a8d796ef62c17ce513"
+  },
+  {
+    "path": "assets/icons/svg/user.svg",
+    "bytes": 241,
+    "sha256": "c2fbe2482ec43821ebc16e22e7f687c415dbf1c098ce807d5bcbbf35df81b0c6"
+  },
+  {
+    "path": "assets/icons/svg/warning.svg",
+    "bytes": 225,
+    "sha256": "382fffa46fa330575c554cb22cca5d2a44161c2407a35d28c6e88bf97baf5d24"
+  }
+]

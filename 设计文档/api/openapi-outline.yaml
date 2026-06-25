@@ -1,0 +1,66 @@
+openapi: 3.1.0
+info:
+  title: 逆水寒帮会联赛数据分析 API
+  version: 1.5.0-final
+paths:
+  /api/health:
+    get: {summary: 健康检查}
+  /api/auth/login:
+    post: {summary: 管理员登录}
+  /api/auth/logout:
+    post: {summary: 退出登录}
+  /api/auth/me:
+    get: {summary: 当前用户}
+  /api/auth/change-password:
+    post: {summary: 修改管理员密码}
+  /api/battles/import/preview:
+    post: {summary: 上传并预解析 CSV，识别双方帮会及未配置职业，不入库}
+  /api/battles/import/confirm:
+    post: {summary: 确认本帮会、对手、比赛时间和评分规则后入库分析}
+  /api/battles:
+    get: {summary: 历史比赛列表}
+  /api/battles/{battle_id}:
+    get: {summary: 比赛详情}
+    delete: {summary: 删除比赛和派生数据}
+  /api/battles/{battle_id}/reanalyze:
+    post: {summary: 使用指定职业六维规则重新分析}
+  /api/battles/{battle_id}/overview:
+    get: {summary: 首页总览与双方核心指标}
+  /api/battles/{battle_id}/rankings:
+    get: {summary: 单场个人综合排名，支持 side/career/team/search/page}
+  /api/rankings/players/aggregate:
+    get: {summary: 多场历史总榜，支持 date_from/date_to/guild_id/career/min_matches/search/sort/page}
+  /api/battles/{battle_id}/players/{stat_id}:
+    get: {summary: 玩家本场详情、六维分析、同职业双方对比与评分解释}
+  /api/rankings/history:
+    get: {summary: 多场历史总榜，默认按场均综合分，支持 date_from/date_to/guild/career/min_matches/sort/page}
+  /api/battles/{battle_id}/team-top3:
+    get: {summary: 按所在团长分组返回每团个人前三}
+  /api/battles/{battle_id}/guild-comparison:
+    get: {summary: 本帮会与对手总量、人均和职业人均对比}
+  /api/battles/{battle_id}/squad-comparison:
+    get: {summary: 双方所有分团汇总与人均对比}
+  /api/settings:
+    get: {summary: 读取系统设置}
+    put: {summary: 修改系统设置}
+  /api/scoring-rules:
+    get: {summary: 职业六维评分规则列表}
+    post: {summary: 创建新规则版本}
+  /api/scoring-rules/validate:
+    post: {summary: 校验每职业六个槽位、范围和权重总和}
+  /api/scoring-rules/range-suggestions:
+    post: {summary: 首次按当前双方同职业样本、后续按历史同职业样本生成可确认的范围建议}
+  /api/scoring-ranges:
+    get: {summary: 获取职业范围版本列表与当前已发布版本}
+    post: {summary: 确认并发布不可变职业范围版本}
+  /api/players/{player_id}/avatar:
+    put: {summary: 上传或替换玩家头像}
+    delete: {summary: 恢复为稳定随机头像}
+  /api/careers/{career}/avatar:
+    put: {summary: 设置职业默认头像}
+    delete: {summary: 删除职业默认头像}
+  /api/backups:
+    post: {summary: 手动备份 SQLite 数据库}
+
+  /api/scoring-rules/{version}/publish:
+    post: {summary: 管理员确认并发布职业范围与权重版本，发布后冻结}
