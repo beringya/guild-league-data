@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
@@ -24,9 +26,20 @@ type UpdateInfo struct {
 	Checksum        string    `json:"checksum,omitempty"`
 	Notes           string    `json:"notes,omitempty"`
 	InstallCommand  string    `json:"install_command,omitempty"`
+	ApplyEnabled    bool      `json:"apply_enabled"`
+	ApplyCommand    string    `json:"apply_command,omitempty"`
 	Source          string    `json:"source"`
 	CheckedAt       time.Time `json:"checked_at"`
 	Error           string    `json:"error,omitempty"`
+}
+
+type UpdateApplyResult struct {
+	Started       bool      `json:"started"`
+	LatestVersion string    `json:"latest_version,omitempty"`
+	Command       string    `json:"command,omitempty"`
+	Message       string    `json:"message,omitempty"`
+	Error         string    `json:"error,omitempty"`
+	StartedAt     time.Time `json:"started_at"`
 }
 
 type updateManifest struct {
@@ -67,6 +80,8 @@ func CheckUpdate(ctx context.Context, cfg config.Config) UpdateInfo {
 		LatestVersion:  cfg.AppVersion,
 		Channel:        cfg.UpdateChannel,
 		InstallCommand: cfg.UpdateInstallCommand,
+		ApplyEnabled:   cfg.UpdateApplyEnabled && cfg.UpdateApplyCommand != "",
+		ApplyCommand:   cfg.UpdateApplyCommand,
 		Source:         "local",
 		CheckedAt:      time.Now().UTC(),
 	}
@@ -97,6 +112,44 @@ func CheckUpdate(ctx context.Context, cfg config.Config) UpdateInfo {
 	}
 	applyManifest(&info, manifest, cfg, "manifest")
 	return info
+}
+
+func ApplyUpdate(ctx context.Context, cfg config.Config) UpdateApplyResult {
+	result := UpdateApplyResult{StartedAt: time.Now().UTC()}
+	if !cfg.UpdateApplyEnabled || strings.TrimSpace(cfg.UpdateApplyCommand) == "" {
+		result.Error = "update_apply_disabled"
+		return result
+	}
+	info := CheckUpdate(ctx, cfg)
+	if info.Error != "" {
+		result.Error = info.Error
+		return result
+	}
+	if !info.UpdateAvailable {
+		result.Error = "no_update_available"
+		result.LatestVersion = info.LatestVersion
+		return result
+	}
+	commandText := cfg.UpdateApplyCommand
+	result.LatestVersion = info.LatestVersion
+	result.Command = commandText
+	result.Started = true
+	result.Message = "update_started"
+
+	env := append(os.Environ(),
+		"UPDATE_LATEST_VERSION="+info.LatestVersion,
+		"UPDATE_DOWNLOAD_URL="+info.DownloadURL,
+		"UPDATE_RELEASE_URL="+info.ReleaseURL,
+	)
+	go func() {
+		time.Sleep(500 * time.Millisecond)
+		cmd := exec.Command("/bin/sh", "-c", commandText)
+		cmd.Env = env
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		_ = cmd.Run()
+	}()
+	return result
 }
 
 func fetchUpdateManifest(ctx context.Context, client *http.Client, cfg config.Config) (updateManifest, error) {

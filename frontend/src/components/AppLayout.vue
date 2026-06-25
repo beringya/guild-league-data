@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from '../api/client'
 import { useAuthStore } from '../stores/auth'
-import type { UpdateInfo } from '../types'
+import type { UpdateApplyResult, UpdateInfo } from '../types'
 
 const route = useRoute()
 const router = useRouter()
@@ -11,6 +11,8 @@ const auth = useAuthStore()
 const versionInfo = ref<UpdateInfo | null>(null)
 const updateOpen = ref(false)
 const checkingUpdate = ref(false)
+const applyingUpdate = ref(false)
+const updateMessage = ref('')
 const copiedCommand = ref(false)
 
 const nav = [
@@ -30,7 +32,7 @@ const currentVersion = computed(() => versionInfo.value?.current_version || '1.0
 const latestVersion = computed(() => versionInfo.value?.latest_version || currentVersion.value)
 const currentVersionLabel = computed(() => formatVersionLabel(currentVersion.value))
 const latestVersionLabel = computed(() => formatVersionLabel(latestVersion.value))
-const updateCommand = computed(() => versionInfo.value?.install_command || 'cd /opt/nsh-guild-analytics && sudo bash scripts/install.sh && sudo systemctl restart nsh-guild-analytics')
+const updateCommand = computed(() => versionInfo.value?.install_command || 'cd /opt/nsh-guild-analytics && docker compose pull app && docker compose up -d --no-build app')
 
 function formatVersionLabel(version: string) {
   const value = version.trim()
@@ -48,9 +50,22 @@ async function checkUpdate() {
     }
   } catch {
     const fallbackVersion = versionInfo.value?.current_version || '1.0.0'
-    versionInfo.value = { current_version: fallbackVersion, latest_version: fallbackVersion, update_available: false, channel: 'stable', source: 'local', checked_at: new Date().toISOString(), error: 'check_failed' }
+    versionInfo.value = { current_version: fallbackVersion, latest_version: fallbackVersion, update_available: false, channel: 'stable', source: 'local', checked_at: new Date().toISOString(), error: 'check_failed', apply_enabled: false }
   } finally {
     checkingUpdate.value = false
+  }
+}
+
+async function applyUpdate() {
+  applyingUpdate.value = true
+  updateMessage.value = ''
+  try {
+    const result = await api.post<UpdateApplyResult>('/api/system/update')
+    updateMessage.value = result.started ? '更新已开始，服务会自动拉取镜像并重启。稍后刷新页面即可。' : (result.error || '更新未启动')
+  } catch {
+    updateMessage.value = '自动更新启动失败，请在服务器手动执行更新命令。'
+  } finally {
+    applyingUpdate.value = false
   }
 }
 
@@ -92,13 +107,16 @@ onMounted(checkUpdate)
           <strong v-else>当前 {{ currentVersionLabel }}</strong>
           <button type="button" @click="updateOpen = false">×</button>
         </div>
-        <p v-if="versionInfo?.update_available">下载新版本后，在服务器重启服务即可完成更新。</p>
+        <p v-if="versionInfo?.update_available && versionInfo?.apply_enabled">检测到新版本，可直接拉取发布镜像并自动重启服务。</p>
+        <p v-else-if="versionInfo?.update_available">检测到新版本，请在服务器执行更新命令完成镜像更新。</p>
         <p v-else-if="versionInfo?.error === 'update_check_not_configured'">尚未配置更新检查地址。</p>
         <p v-else-if="versionInfo?.error">更新检查暂不可用：{{ versionInfo.error }}</p>
         <p v-else>{{ checkingUpdate ? '正在检查更新...' : '已是当前配置源的最新版本。' }}</p>
         <div v-if="versionInfo?.notes" class="update-notes">{{ versionInfo.notes }}</div>
+        <p v-if="updateMessage">{{ updateMessage }}</p>
         <div class="update-actions">
-          <a v-if="versionInfo?.download_url" class="btn primary" :href="versionInfo.download_url" target="_blank" rel="noreferrer">下载更新</a>
+          <button v-if="versionInfo?.update_available && versionInfo?.apply_enabled" class="btn primary" type="button" @click="applyUpdate" :disabled="applyingUpdate">{{ applyingUpdate ? '更新中...' : '自动更新' }}</button>
+          <a v-if="versionInfo?.download_url" class="btn" :href="versionInfo.download_url" target="_blank" rel="noreferrer">下载更新</a>
           <a v-if="versionInfo?.release_url" class="btn" :href="versionInfo.release_url" target="_blank" rel="noreferrer">发布页</a>
           <button class="btn" type="button" @click="checkUpdate" :disabled="checkingUpdate">重新检查</button>
         </div>

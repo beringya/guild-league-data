@@ -16,13 +16,14 @@ COPY backend/ ./
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/nsh-guild-analytics ./cmd/server
 
 FROM alpine:3.22 AS runtime
-RUN apk add --no-cache ca-certificates tzdata wget && addgroup -S app && adduser -S -G app app
+RUN apk add --no-cache ca-certificates tzdata wget docker-cli docker-cli-compose && addgroup -S app && adduser -S -G app app
 WORKDIR /app
+RUN mkdir -p /app/bin
 COPY --from=backend-build /out/nsh-guild-analytics /app/nsh-guild-analytics
 COPY --from=frontend-build /src/frontend/dist /app/public
 COPY deployment/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh && mkdir -p /app/data/uploads /app/backups /app/public && chown -R app:app /app /entrypoint.sh
-USER app
+COPY deployment/update-image.sh /app/bin/update-image.sh
+RUN chmod +x /entrypoint.sh /app/bin/update-image.sh && mkdir -p /app/data/uploads /app/backups /app/public && chown -R app:app /app /entrypoint.sh
 EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/app/nsh-guild-analytics"]

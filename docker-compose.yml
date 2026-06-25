@@ -2,25 +2,32 @@ name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${APP_IMAGE:-ghcr.io/beringya/guild-league-data:latest}
     container_name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_app
+    user: root
     restart: unless-stopped
     env_file:
       - .env
     environment:
       LISTEN_ADDR: ":8080"
+      APP_IMAGE: "${APP_IMAGE:-ghcr.io/beringya/guild-league-data:latest}"
+      APP_IMAGE_REPOSITORY: "${APP_IMAGE_REPOSITORY:-ghcr.io/beringya/guild-league-data}"
+      COMPOSE_PROJECT_NAME: "${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}"
+      DEPLOY_DIR_HOST: "${DEPLOY_DIR_HOST:-/opt/nsh-guild-analytics}"
       DATABASE_DSN: "postgres://${POSTGRES_USER:-nsh_guild}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nsh_guild_analytics}?sslmode=disable"
       REDIS_ADDR: "redis:6379"
       UPLOAD_DIR: "/app/data/uploads"
       BACKUP_DIR: "/app/backups"
       STATIC_DIR: "/app/public"
+      UPDATE_APPLY_ENABLED: "${UPDATE_APPLY_ENABLED:-true}"
+      UPDATE_APPLY_COMMAND: "${UPDATE_APPLY_COMMAND:-/app/bin/update-image.sh}"
     ports:
       - "${APP_PORT:-18080}:8080"
     volumes:
       - app_uploads:/app/data/uploads
       - app_backups:/app/backups
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DEPLOY_DIR_HOST:-/opt/nsh-guild-analytics}:${DEPLOY_DIR_HOST:-/opt/nsh-guild-analytics}
     depends_on:
       postgres:
         condition: service_healthy

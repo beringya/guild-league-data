@@ -1,0 +1,55 @@
+version: 2
+
+project_name: nsh-guild-analytics
+
+builds:
+  - id: nsh-guild-analytics
+    dir: backend
+    main: ./cmd/server
+    binary: nsh-guild-analytics
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+
+dockers_v2:
+  - images:
+      - "ghcr.io/beringya/guild-league-data"
+    tags:
+      - "{{ .Version }}"
+      - latest
+    dockerfile: Dockerfile.goreleaser
+    ids:
+      - nsh-guild-analytics
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    extra_files:
+      - frontend/dist
+      - deployment
+
+archives:
+  - id: binary
+    ids:
+      - nsh-guild-analytics
+    formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+release:
+  github:
+    owner: beringya
+    name: guild-league-data
+  extra_files:
+    - glob: release/nsh-guild-analytics-{{ .Version }}.tar.gz
+    - glob: release/nsh-guild-analytics-{{ .Version }}.tar.gz.sha256

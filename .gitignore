@@ -27,6 +27,7 @@ backups/*
 backend/bin/
 backend/tmp/
 release/
+dist/
 *.exe
 *.log
 *.tmp

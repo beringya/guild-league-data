@@ -18,6 +18,8 @@ type Config struct {
 	UpdateCheckURL       string
 	UpdateDownloadURL    string
 	UpdateInstallCommand string
+	UpdateApplyEnabled   bool
+	UpdateApplyCommand   string
 	UpdateChannel        string
 	UpdateCheckTimeout   time.Duration
 	DatabaseDSN          string
@@ -42,12 +44,14 @@ func Load() Config {
 		AppEnv:               env("GIN_MODE", "release"),
 		ListenAddr:           env("LISTEN_ADDR", ":8080"),
 		PublicURL:            env("PUBLIC_URL", "http://localhost:18080"),
-		UpdateGithubRepo:      env("UPDATE_GITHUB_REPO", ""),
-		UpdateCheckURL:        env("UPDATE_CHECK_URL", ""),
-		UpdateDownloadURL:     env("UPDATE_DOWNLOAD_URL", ""),
-		UpdateInstallCommand:  env("UPDATE_INSTALL_COMMAND", ""),
-		UpdateChannel:         env("UPDATE_CHANNEL", "stable"),
-		UpdateCheckTimeout:    envDuration("UPDATE_CHECK_TIMEOUT", 3*time.Second),
+		UpdateGithubRepo:     env("UPDATE_GITHUB_REPO", ""),
+		UpdateCheckURL:       env("UPDATE_CHECK_URL", ""),
+		UpdateDownloadURL:    env("UPDATE_DOWNLOAD_URL", ""),
+		UpdateInstallCommand: env("UPDATE_INSTALL_COMMAND", ""),
+		UpdateApplyEnabled:   envBool("UPDATE_APPLY_ENABLED", false),
+		UpdateApplyCommand:   env("UPDATE_APPLY_COMMAND", ""),
+		UpdateChannel:        env("UPDATE_CHANNEL", "stable"),
+		UpdateCheckTimeout:   envDuration("UPDATE_CHECK_TIMEOUT", 3*time.Second),
 		DatabaseDSN:          requiredAny("DATABASE_DSN", "DATABASE_URL"),
 		RedisAddr:            env("REDIS_ADDR", "redis:6379"),
 		RedisPassword:        env("REDIS_PASSWORD", ""),

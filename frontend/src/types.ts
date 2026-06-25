@@ -14,9 +14,20 @@ export interface UpdateInfo {
   checksum?: string
   notes?: string
   install_command?: string
+  apply_enabled: boolean
+  apply_command?: string
   source: string
   checked_at: string
   error?: string
+}
+
+export interface UpdateApplyResult {
+  started: boolean
+  latest_version?: string
+  command?: string
+  message?: string
+  error?: string
+  started_at: string
 }
 
 export interface BattleSummary {

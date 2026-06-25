@@ -26,7 +26,7 @@
 
 ## 快速安装
 
-服务器需要已安装 Docker 和 Docker Compose v2。下载 GitHub Release 中的 `nsh-guild-analytics-*.tar.gz` 后执行：
+服务器需要已安装 Docker 和 Docker Compose v2。下载 GitHub Release 中的 `nsh-guild-analytics-*.tar.gz` 后执行。安装包只包含部署脚本和 Compose 文件，应用镜像会从 GHCR 拉取，不在服务器本地构建源码。
 
 ```bash
 tar -xzf nsh-guild-analytics-*.tar.gz
@@ -47,34 +47,25 @@ cd /opt/nsh-guild-analytics
 docker compose logs app
 ```
 
-## 从源码部署
+## 本地开发构建
+
+普通用户部署不要走源码构建。维护方或开发者需要本地调试镜像时，可以使用构建覆盖文件：
 
 ```bash
 cp .env.example .env
-# 至少替换 POSTGRES_PASSWORD 和 SESSION_SECRET；一键安装脚本会自动生成
-docker compose up -d --build
+docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
 docker compose logs app
 ```
 
-访问地址：
+## 发布流程
 
-```text
-http://服务器地址:18080
-```
+发布流程和 `sub2api` 类似：
 
-首次管理员账号为 `admin`。初始随机密码通过首次启动日志查看：
-
-```bash
-docker compose logs app
-```
-
-## 发布打包
-
-打包：
-
-```bash
-bash scripts/package.sh
-```
+- 维护方在源码仓库开发。
+- 推送 `v*` tag 触发 GitHub Actions。
+- Actions 先构建前端，再由 GoReleaser 构建 Linux amd64/arm64 后端二进制和多架构 Docker 镜像。
+- 镜像推送到 `ghcr.io/beringya/guild-league-data`，同时生成 GitHub Release。
+- Release 上传轻量安装包，部署服务器只拉镜像运行。
 
 发布 GitHub 版本：
 
@@ -83,7 +74,7 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-GitHub Actions 会自动生成 Release，并上传 `.tar.gz` 离线安装包和 `.sha256` 校验文件。
+GitHub Actions 会自动生成 Release，推送 `ghcr.io/beringya/guild-league-data:<version>` 和 `latest` 镜像，并上传 `.tar.gz` 安装包和 `.sha256` 校验文件。
 
 ## 卸载
 
@@ -101,15 +92,18 @@ sudo REMOVE_DATA=true bash scripts/uninstall.sh
 
 ## 版本更新提示
 
-登录后，左上角版本徽标会调用 `GET /api/system/version` 检查更新。检测到远程版本高于当前 `APP_VERSION` 时，侧边栏会提示新版本，并提供下载入口、发布页入口和重启更新命令。
+登录后，左上角版本徽标会调用 `GET /api/system/version` 检查更新。检测到远程版本高于当前 `APP_VERSION` 时，侧边栏会提示新版本。通过官方安装脚本部署时，页面会显示“自动更新”按钮：服务端会拉取新发布的镜像，更新 `.env` 中的 `APP_IMAGE` 和 `APP_VERSION`，然后用 Docker Compose 重建 `app` 服务。
 
 推荐直接对接 GitHub Latest Release：
 
 ```env
 APP_VERSION=1.0.0
-REPO_URL=https://github.com/beringya/guild-league-data.git
+APP_IMAGE=ghcr.io/beringya/guild-league-data:1.0.0
+APP_IMAGE_REPOSITORY=ghcr.io/beringya/guild-league-data
 UPDATE_GITHUB_REPO=beringya/guild-league-data
-UPDATE_INSTALL_COMMAND=cd /opt/nsh-guild-analytics && sudo bash scripts/install.sh && sudo systemctl restart nsh-guild-analytics
+UPDATE_INSTALL_COMMAND=cd /opt/nsh-guild-analytics && docker compose pull app && docker compose up -d --no-build app
+UPDATE_APPLY_ENABLED=true
+UPDATE_APPLY_COMMAND=/app/bin/update-image.sh
 UPDATE_CHECK_TIMEOUT=3s
 ```
 
@@ -120,7 +114,7 @@ UPDATE_CHECK_TIMEOUT=3s
   "version": "1.0.1",
   "channel": "stable",
   "release_url": "https://github.com/beringya/guild-league-data/releases/tag/v1.0.1",
-  "download_url": "https://github.com/beringya/guild-league-data/releases/download/v1.0.1/nsh-guild-analytics-1.0.1.tar.gz",
+  "download_url": "https://github.com/beringya/guild-league-data/releases/tag/v1.0.1",
   "checksum": "sha256:...",
   "notes": "更新说明"
 }
