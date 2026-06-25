@@ -3,18 +3,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nsh-guild-analytics
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "${APP_PORT:-18080}:8080"
     env_file:
       - .env
     volumes:
-      - ./data:/app/data
-      - ./backups:/app/backups
+      - ${APP_DATA_DIR:-./data}:/app/data
+      - ${APP_BACKUP_DIR:-./backups}:/app/backups
+    networks:
+      - nsh-guild-analytics
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health')"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 20s
+
+networks:
+  nsh-guild-analytics:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_net

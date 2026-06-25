@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import (
     CheckConstraint,
+    BigInteger,
     DateTime,
     Float,
     ForeignKey,
@@ -151,10 +152,10 @@ class BattlePlayerStat(Base):
     kills: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     assists: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     logistics: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    player_damage: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    building_damage: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    healing: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    damage_taken: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    player_damage: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
+    building_damage: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
+    healing: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
+    damage_taken: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
     deaths: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     qingdeng: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     revive: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
