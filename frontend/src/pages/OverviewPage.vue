@@ -6,6 +6,7 @@ import EChart from '../components/EChart.vue'
 import EmptyState from '../components/EmptyState.vue'
 import PlayerTable from '../components/PlayerTable.vue'
 import { api } from '../api/client'
+import type { EChartsOption } from 'echarts'
 import type { BattleSummary, Insight, ScoredStat, Totals } from '../types'
 import { compactNumber, dateTime } from '../utils/format'
 
@@ -56,7 +57,7 @@ const metricCards = computed(() => {
   ]
 })
 
-const barOption = computed(() => ({
+const barOption = computed<EChartsOption>(() => ({
   color: ['#EF6F9F', '#70A8E7'],
   tooltip: {},
   legend: { bottom: 0 },

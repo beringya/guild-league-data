@@ -6,6 +6,7 @@ import CardPanel from '../components/CardPanel.vue'
 import EChart from '../components/EChart.vue'
 import EmptyState from '../components/EmptyState.vue'
 import { api } from '../api/client'
+import type { EChartsOption } from 'echarts'
 import type { DimensionScore, ScoredStat } from '../types'
 import { compactNumber, percent, score } from '../utils/format'
 
@@ -24,7 +25,7 @@ async function load() {
   }
 }
 
-const radarOption = computed(() => ({
+const radarOption = computed<EChartsOption>(() => ({
   color: ['#EF6F9F'],
   radar: { indicator: (detail.value?.dimensions || []).map((d) => ({ name: d.label, max: 100 })) },
   series: [{ type: 'radar', areaStyle: { opacity: 0.2 }, data: [{ value: (detail.value?.dimensions || []).map((d) => d.score), name: '本人' }] }]

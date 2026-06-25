@@ -5,6 +5,7 @@ import CardPanel from '../components/CardPanel.vue'
 import EChart from '../components/EChart.vue'
 import EmptyState from '../components/EmptyState.vue'
 import { api } from '../api/client'
+import type { EChartsOption } from 'echarts'
 import type { BattleSummary, Insight, Totals } from '../types'
 import { compactNumber } from '../utils/format'
 
@@ -19,7 +20,7 @@ onMounted(async () => {
   }
 })
 
-const chartOption = computed(() => {
+const chartOption = computed<EChartsOption>(() => {
   const battle = data.value?.battle
   const totals = data.value?.totals || {}
   const home = battle ? totals[battle.home_guild] : undefined
