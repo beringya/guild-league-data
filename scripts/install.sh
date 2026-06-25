@@ -6,6 +6,7 @@ INSTALL_DIR="${INSTALL_DIR:-/opt/${APP_NAME}}"
 APP_PORT="${APP_PORT:-18080}"
 COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-${APP_NAME}}"
 REPO_URL="${REPO_URL:-}"
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -66,7 +67,15 @@ if [ -n "$REPO_URL" ]; then
     git pull --ff-only
   fi
 else
-  echo "使用当前目录中的离线安装包文件。"
+  echo "使用离线安装包文件。"
+  if [ "$SOURCE_DIR" != "$INSTALL_DIR" ]; then
+    need_cmd tar
+    tar -C "$SOURCE_DIR" \
+      --exclude='./data' \
+      --exclude='./backups' \
+      --exclude='./release' \
+      -cf - . | tar -C "$INSTALL_DIR" -xf -
+  fi
 fi
 
 mkdir -p data/uploads backups

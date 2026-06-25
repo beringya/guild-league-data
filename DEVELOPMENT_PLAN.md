@@ -63,7 +63,7 @@
 - 参考 `sub2api` 的脚本安装体验，提供可离线解包后执行的 `scripts/install.sh`。
 - 安装脚本负责架构/依赖检查、生成 `.env`、随机生成 `POSTGRES_PASSWORD` 与 `SESSION_SECRET`、创建 systemd 服务、启动 Docker Compose、输出访问地址和首次密码查看命令。
 - 提供 `scripts/uninstall.sh`，默认保留数据，显式 `REMOVE_DATA=true` 才删除安装目录和 Docker 卷。
-- 提供 `scripts/package.sh`，生成包含源码、前端资源、Docker、Compose、脚本、Gitee 模板和设计文档摘要的发布包。
+- 提供 `scripts/package.sh`，生成包含源码、前端资源、Docker、Compose、脚本、GitHub 模板和设计文档摘要的发布包。
 
 ## 阶段 9：版本更新提示
 
@@ -72,10 +72,10 @@
 - 检测到远程版本更高时，前端提供下载入口、发布页入口和可复制的服务器重启更新命令。
 - 安装脚本会在重新安装或更新时同步新包中的 `APP_VERSION`，并保留 `REPO_URL` 便于 Git 拉取更新。
 
-## 阶段 10：Gitee 与交付规范
+## 阶段 10：GitHub 与交付规范
 
-- 补齐并维护 `.gitignore`、`.dockerignore`、`LICENSE`、`CONTRIBUTING.md`、`.gitee/ISSUE_TEMPLATE.zh-CN.md` 和 `.gitee/PULL_REQUEST_TEMPLATE.zh-CN.md`。
-- README 明确技术栈、数据库选择、一键安装、Docker 独立部署和本地未编译运行说明。
+- 补齐并维护 `.gitignore`、`.dockerignore`、`LICENSE`、`CONTRIBUTING.md`、GitHub Issue/PR 模板和 Release 工作流。
+- README 明确技术栈、数据库选择、一键安装、Docker 独立部署和 GitHub Release 发布说明。
 - 交付包不包含 `.env`、数据库文件、上传文件、备份文件、`node_modules`、Go 编译产物或临时日志。
 
 ## 阶段 11：验证与验收

@@ -2,6 +2,9 @@
 set -Eeuo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -z "${VERSION:-}" ] && [ -f "${ROOT}/.env.example" ]; then
+  VERSION="$(grep '^APP_VERSION=' "${ROOT}/.env.example" | cut -d= -f2- || true)"
+fi
 VERSION="${VERSION:-$(date +%Y%m%d%H%M%S)}"
 NAME="nsh-guild-analytics-${VERSION}"
 OUT_DIR="${ROOT}/release"
@@ -14,7 +17,7 @@ copy_item() {
   cp -a "$ROOT/$1" "$PKG_DIR/$1"
 }
 
-for item in backend frontend deployment scripts Dockerfile docker-compose.yml docker-compose.postgres.yml .env.example README.md DEVELOPMENT_PLAN.md IMPLEMENTATION_CHECKLIST.md LICENSE CONTRIBUTING.md .dockerignore .gitignore .gitee; do
+for item in backend frontend deployment scripts Dockerfile docker-compose.yml docker-compose.postgres.yml .env.example README.md DEVELOPMENT_PLAN.md IMPLEMENTATION_CHECKLIST.md LICENSE CONTRIBUTING.md .dockerignore .gitignore .github; do
   [ -e "$ROOT/$item" ] && copy_item "$item"
 done
 

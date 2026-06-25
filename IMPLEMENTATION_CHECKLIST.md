@@ -20,7 +20,7 @@
 | Docker 部署 | 已完成 | `docker-compose.yml` 默认启动 app/postgres/redis，独立网络和卷，端口默认 18080。 |
 | 自动化安装 | 已完成 | `scripts/install.sh` 自动生成密钥、配置 `.env`、创建 systemd 服务、启动 Compose 并输出运维提示。 |
 | 打包卸载 | 已完成 | `scripts/package.sh` 生成离线包，`scripts/uninstall.sh` 默认保留数据并支持显式清理。 |
-| Gitee 规范 | 已完成 | README、LICENSE、CONTRIBUTING、Issue/PR 模板、忽略规则与交付说明完整。 |
+| GitHub 发布规范 | 已完成 | README、LICENSE、CONTRIBUTING、Issue/PR 模板、Release 工作流、忽略规则与交付说明完整。 |
 
 ## 后端验收项
 
