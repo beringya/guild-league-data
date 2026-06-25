@@ -61,14 +61,19 @@ func (s *ImportService) ParsePreview(ctx context.Context, filename string, data 
 		return domain.ImportPreview{}, fmt.Errorf("CSV 解析失败：%w", err)
 	}
 	preview := domain.ImportPreview{
-		SourceFilename:  filepath.Base(filename),
-		SourceSHA256:    hex.EncodeToString(sha[:]),
+		SourceFilename:   filepath.Base(filename),
+		SourceSHA256:     hex.EncodeToString(sha[:]),
 		OriginalRowCount: maxInt(len(records)-1, 0),
+		Guilds:           []domain.GuildPreview{},
+		PreviewRows:      []domain.RawStat{},
 		Warnings: []domain.ImportMessage{{
 			Level:   "info",
 			Code:    "encoding_detected",
 			Message: "文件编码识别为 " + encodingName,
 		}},
+		Errors:           []domain.ImportMessage{},
+		UnknownCareers:   []string{},
+		RangeSuggestions: []domain.RangeSuggestion{},
 	}
 	if inferred, ok := inferBattleTime(filename); ok {
 		preview.InferredBattleAt = &inferred

@@ -18,12 +18,24 @@ async function onFile(event: Event) {
   loading.value = true
   message.value = ''
   try {
-    preview.value = await api.uploadPreview(file)
+    preview.value = normalizePreview(await api.uploadPreview(file))
     selectedGuild.value = preview.value.guilds[0]?.name || ''
   } catch {
     message.value = '解析失败，请检查 CSV 文件。'
   } finally {
     loading.value = false
+  }
+}
+
+function normalizePreview(value: ImportPreview): ImportPreview {
+  return {
+    ...value,
+    guilds: value.guilds || [],
+    preview_rows: value.preview_rows || [],
+    warnings: value.warnings || [],
+    errors: value.errors || [],
+    unknown_careers: value.unknown_careers || [],
+    range_suggestions: value.range_suggestions || []
   }
 }
 
