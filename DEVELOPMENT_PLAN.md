@@ -42,3 +42,11 @@
 - 覆盖 CSV 清洗、重复表头、样例人数、KDA、参团率、范围建议和综合分。
 - 提供静态文件级检查说明。
 - 因当前本地没有部署环境，本轮不执行编译运行；后续可在 Docker 环境中执行端到端验收。
+
+## 阶段 7：Gitee 与一键安装交付
+
+- 参考 `sub2api` 的脚本安装体验，提供可离线解包后执行的 `scripts/install.sh`。
+- 默认 Docker Compose 独立部署，使用独立安装目录、独立 compose project、独立网络、可配置端口和独立数据目录。
+- 默认 SQLite 单文件数据库，避免复用服务器已有数据库；可选 PostgreSQL 独立容器模式。
+- 提供 `scripts/uninstall.sh` 和 `scripts/package.sh`。
+- 补齐 Gitee 常用仓库文件：`LICENSE`、`CONTRIBUTING.md`、Issue 模板、PR 模板、忽略规则和交付说明。
