@@ -3,12 +3,14 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -28,6 +30,8 @@ type UpdateInfo struct {
 	InstallCommand  string    `json:"install_command,omitempty"`
 	ApplyEnabled    bool      `json:"apply_enabled"`
 	ApplyCommand    string    `json:"apply_command,omitempty"`
+	ImageDownloaded bool      `json:"image_downloaded"`
+	PendingRestart  bool      `json:"pending_restart"`
 	Source          string    `json:"source"`
 	CheckedAt       time.Time `json:"checked_at"`
 	Error           string    `json:"error,omitempty"`
@@ -35,6 +39,7 @@ type UpdateInfo struct {
 
 type UpdateApplyResult struct {
 	Started       bool      `json:"started"`
+	Action        string    `json:"action,omitempty"`
 	LatestVersion string    `json:"latest_version,omitempty"`
 	Command       string    `json:"command,omitempty"`
 	Message       string    `json:"message,omitempty"`
@@ -85,6 +90,11 @@ func CheckUpdate(ctx context.Context, cfg config.Config) UpdateInfo {
 		Source:         "local",
 		CheckedAt:      time.Now().UTC(),
 	}
+	applyPendingDownload(&info, cfg)
+	if info.PendingRestart {
+		info.ReleaseURL = firstNonEmpty(info.ReleaseURL, githubReleasePage(cfg.UpdateGithubRepo, info.LatestVersion))
+		return info
+	}
 	if cfg.UpdateCheckURL == "" && cfg.UpdateGithubRepo == "" {
 		info.Error = "update_check_not_configured"
 		return info
@@ -114,10 +124,18 @@ func CheckUpdate(ctx context.Context, cfg config.Config) UpdateInfo {
 	return info
 }
 
-func ApplyUpdate(ctx context.Context, cfg config.Config) UpdateApplyResult {
+func ApplyUpdate(ctx context.Context, cfg config.Config, action string) UpdateApplyResult {
 	result := UpdateApplyResult{StartedAt: time.Now().UTC()}
 	if !cfg.UpdateApplyEnabled || strings.TrimSpace(cfg.UpdateApplyCommand) == "" {
 		result.Error = "update_apply_disabled"
+		return result
+	}
+	action = strings.ToLower(strings.TrimSpace(action))
+	if action == "" {
+		action = "restart"
+	}
+	if action != "download" && action != "restart" {
+		result.Error = "invalid_update_action"
 		return result
 	}
 	info := CheckUpdate(ctx, cfg)
@@ -125,31 +143,57 @@ func ApplyUpdate(ctx context.Context, cfg config.Config) UpdateApplyResult {
 		result.Error = info.Error
 		return result
 	}
-	if !info.UpdateAvailable {
+	if !info.UpdateAvailable && !(action == "restart" && info.PendingRestart) {
 		result.Error = "no_update_available"
 		result.LatestVersion = info.LatestVersion
 		return result
 	}
 	commandText := cfg.UpdateApplyCommand
+	if action == "download" {
+		err := runUpdateCommand(ctx, cfg, commandText, info, "download")
+		result.Action = action
+		result.LatestVersion = info.LatestVersion
+		result.Command = commandText
+		result.Started = err == nil
+		if err != nil {
+			result.Error = err.Error()
+			return result
+		}
+		result.Message = "downloaded"
+		return result
+	}
+
+	if !info.PendingRestart {
+		if err := writePendingUpdate(cfg, info.LatestVersion); err != nil {
+			result.Error = err.Error()
+			return result
+		}
+	}
 	result.LatestVersion = info.LatestVersion
+	result.Action = action
 	result.Command = commandText
 	result.Started = true
-	result.Message = "update_started"
+	result.Message = "restart_started"
 
+	go func() {
+		time.Sleep(500 * time.Millisecond)
+		_ = runUpdateCommand(context.Background(), cfg, commandText, info, "restart")
+	}()
+	return result
+}
+
+func runUpdateCommand(ctx context.Context, cfg config.Config, commandText string, info UpdateInfo, action string) error {
 	env := append(os.Environ(),
+		"UPDATE_ACTION="+action,
 		"UPDATE_LATEST_VERSION="+info.LatestVersion,
 		"UPDATE_DOWNLOAD_URL="+info.DownloadURL,
 		"UPDATE_RELEASE_URL="+info.ReleaseURL,
 	)
-	go func() {
-		time.Sleep(500 * time.Millisecond)
-		cmd := exec.Command("/bin/sh", "-c", commandText)
-		cmd.Env = env
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		_ = cmd.Run()
-	}()
-	return result
+	cmd := exec.CommandContext(ctx, "/bin/sh", "-c", commandText)
+	cmd.Env = env
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 func fetchUpdateManifest(ctx context.Context, client *http.Client, cfg config.Config) (updateManifest, error) {
@@ -225,6 +269,79 @@ func applyManifest(info *UpdateInfo, manifest updateManifest, cfg config.Config,
 	info.Notes = manifest.Notes
 	info.Source = source
 	info.UpdateAvailable = compareVersions(latest, cfg.AppVersion) > 0
+	applyPendingDownload(info, cfg)
+}
+
+func applyPendingDownload(info *UpdateInfo, cfg config.Config) {
+	version, err := readPendingUpdate(cfg)
+	if err != nil || version == "" {
+		return
+	}
+	if compareVersions(version, info.CurrentVersion) <= 0 {
+		_ = clearPendingUpdate(cfg)
+		return
+	}
+	info.LatestVersion = version
+	info.UpdateAvailable = true
+	info.ImageDownloaded = true
+	info.PendingRestart = true
+}
+
+func pendingUpdatePath(cfg config.Config) string {
+	if strings.TrimSpace(cfg.DeployDirHost) == "" {
+		return ""
+	}
+	return filepath.Join(cfg.DeployDirHost, ".pending-update")
+}
+
+func readPendingUpdate(cfg config.Config) (string, error) {
+	path := pendingUpdatePath(cfg)
+	if path == "" {
+		return "", nil
+	}
+	data, err := os.ReadFile(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(data)), nil
+}
+
+func writePendingUpdate(cfg config.Config, version string) error {
+	path := pendingUpdatePath(cfg)
+	if path == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(path, []byte(strings.TrimSpace(version)+"\n"), 0o644)
+}
+
+func clearPendingUpdate(cfg config.Config) error {
+	path := pendingUpdatePath(cfg)
+	if path == "" {
+		return nil
+	}
+	err := os.Remove(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	return err
+}
+
+func githubReleasePage(repo, version string) string {
+	repo = strings.Trim(strings.TrimSpace(repo), "/")
+	version = strings.TrimSpace(version)
+	if repo == "" || version == "" || !strings.Contains(repo, "/") {
+		return ""
+	}
+	if !strings.HasPrefix(strings.ToLower(version), "v") {
+		version = "v" + version
+	}
+	return "https://github.com/" + repo + "/releases/tag/" + version
 }
 
 func bestAssetDownload(assets []updateAsset) string {

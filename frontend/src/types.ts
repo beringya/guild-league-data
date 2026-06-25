@@ -16,6 +16,8 @@ export interface UpdateInfo {
   install_command?: string
   apply_enabled: boolean
   apply_command?: string
+  image_downloaded: boolean
+  pending_restart: boolean
   source: string
   checked_at: string
   error?: string
@@ -23,6 +25,7 @@ export interface UpdateInfo {
 
 export interface UpdateApplyResult {
   started: boolean
+  action?: 'download' | 'restart'
   latest_version?: string
   command?: string
   message?: string

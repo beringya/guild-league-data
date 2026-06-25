@@ -14,6 +14,7 @@ type Config struct {
 	AppEnv               string
 	ListenAddr           string
 	PublicURL            string
+	DeployDirHost        string
 	UpdateGithubRepo     string
 	UpdateCheckURL       string
 	UpdateDownloadURL    string
@@ -44,6 +45,7 @@ func Load() Config {
 		AppEnv:               env("GIN_MODE", "release"),
 		ListenAddr:           env("LISTEN_ADDR", ":8080"),
 		PublicURL:            env("PUBLIC_URL", "http://localhost:18080"),
+		DeployDirHost:        env("DEPLOY_DIR_HOST", ""),
 		UpdateGithubRepo:     env("UPDATE_GITHUB_REPO", ""),
 		UpdateCheckURL:       env("UPDATE_CHECK_URL", ""),
 		UpdateDownloadURL:    env("UPDATE_DOWNLOAD_URL", ""),

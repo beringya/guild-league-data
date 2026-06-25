@@ -140,7 +140,13 @@ func (s *Server) versionInfo(c *gin.Context) {
 }
 
 func (s *Server) applyUpdate(c *gin.Context) {
-	result := services.ApplyUpdate(c.Request.Context(), s.cfg)
+	var req struct {
+		Action string `json:"action"`
+	}
+	if c.Request.Body != nil {
+		_ = c.ShouldBindJSON(&req)
+	}
+	result := services.ApplyUpdate(c.Request.Context(), s.cfg, req.Action)
 	if result.Error != "" {
 		c.JSON(http.StatusBadRequest, result)
 		return

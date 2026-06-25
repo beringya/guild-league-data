@@ -7,6 +7,7 @@ COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-${APP_NAME}}"
 APP_IMAGE_REPOSITORY="${APP_IMAGE_REPOSITORY:-ghcr.io/beringya/guild-league-data}"
 APP_IMAGE="${APP_IMAGE:-${APP_IMAGE_REPOSITORY}:latest}"
 LATEST_VERSION="${UPDATE_LATEST_VERSION:-}"
+UPDATE_ACTION="${UPDATE_ACTION:-restart}"
 
 if [ -z "$LATEST_VERSION" ]; then
   echo "missing UPDATE_LATEST_VERSION" >&2
@@ -15,6 +16,16 @@ fi
 
 TAG="${LATEST_VERSION#v}"
 IMAGE="${APP_IMAGE_REPOSITORY}:${TAG}"
+PENDING_FILE="${INSTALL_DIR}/.pending-update"
+
+if [ "$UPDATE_ACTION" = "download" ]; then
+  docker pull "$IMAGE"
+  if [ -d "$INSTALL_DIR" ]; then
+    printf '%s\n' "$TAG" > "$PENDING_FILE"
+  fi
+  echo "downloaded ${IMAGE}"
+  exit 0
+fi
 
 if [ "${UPDATE_HELPER:-}" != "1" ]; then
   helper_name="${COMPOSE_PROJECT_NAME}_updater_$(date +%s)"
@@ -23,6 +34,7 @@ if [ "${UPDATE_HELPER:-}" != "1" ]; then
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v "${INSTALL_DIR}:${INSTALL_DIR}" \
     -e UPDATE_HELPER=1 \
+    -e UPDATE_ACTION=restart \
     -e UPDATE_LATEST_VERSION="$LATEST_VERSION" \
     -e APP_NAME="$APP_NAME" \
     -e DEPLOY_DIR_HOST="$INSTALL_DIR" \
@@ -75,6 +87,7 @@ if ! docker compose -p "$COMPOSE_PROJECT_NAME" up -d --no-build app; then
   docker compose -p "$COMPOSE_PROJECT_NAME" up -d --no-build app || true
   exit 5
 fi
+rm -f "$PENDING_FILE"
 docker image prune -f >/dev/null 2>&1 || true
 
 echo "updated ${APP_NAME} to ${IMAGE}"

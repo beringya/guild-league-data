@@ -13,7 +13,6 @@ const updateOpen = ref(false)
 const checkingUpdate = ref(false)
 const applyingUpdate = ref(false)
 const updateMessage = ref('')
-const copiedCommand = ref(false)
 
 const nav = [
   { path: '/', label: '首页概览', icon: 'home' },
@@ -32,7 +31,12 @@ const currentVersion = computed(() => versionInfo.value?.current_version || '1.0
 const latestVersion = computed(() => versionInfo.value?.latest_version || currentVersion.value)
 const currentVersionLabel = computed(() => formatVersionLabel(currentVersion.value))
 const latestVersionLabel = computed(() => formatVersionLabel(latestVersion.value))
-const updateCommand = computed(() => versionInfo.value?.install_command || 'cd /opt/nsh-guild-analytics && docker compose pull app && docker compose up -d --no-build app')
+const hasUpdate = computed(() => Boolean(versionInfo.value?.update_available))
+const pendingRestart = computed(() => Boolean(versionInfo.value?.pending_restart || versionInfo.value?.image_downloaded))
+const primaryUpdateText = computed(() => {
+  if (applyingUpdate.value) return pendingRestart.value ? '正在重启...' : '正在下载...'
+  return pendingRestart.value ? '重启服务' : '下载更新'
+})
 
 function formatVersionLabel(version: string) {
   const value = version.trim()
@@ -50,7 +54,7 @@ async function checkUpdate() {
     }
   } catch {
     const fallbackVersion = versionInfo.value?.current_version || '1.0.0'
-    versionInfo.value = { current_version: fallbackVersion, latest_version: fallbackVersion, update_available: false, channel: 'stable', source: 'local', checked_at: new Date().toISOString(), error: 'check_failed', apply_enabled: false }
+    versionInfo.value = { current_version: fallbackVersion, latest_version: fallbackVersion, update_available: false, channel: 'stable', source: 'local', checked_at: new Date().toISOString(), error: 'check_failed', apply_enabled: false, image_downloaded: false, pending_restart: false }
   } finally {
     checkingUpdate.value = false
   }
@@ -59,24 +63,21 @@ async function checkUpdate() {
 async function applyUpdate() {
   applyingUpdate.value = true
   updateMessage.value = ''
+  const action = pendingRestart.value ? 'restart' : 'download'
   try {
-    const result = await api.post<UpdateApplyResult>('/api/system/update')
-    updateMessage.value = result.started ? '更新已开始，服务会自动拉取镜像并重启。稍后刷新页面即可。' : (result.error || '更新未启动')
+    const result = await api.post<UpdateApplyResult>('/api/system/update', { action })
+    if (result.started && action === 'download') {
+      versionInfo.value = versionInfo.value ? { ...versionInfo.value, image_downloaded: true, pending_restart: true } : versionInfo.value
+      updateMessage.value = '下载完成，可以重启服务。'
+    } else if (result.started) {
+      updateMessage.value = '正在重启服务，稍后刷新页面。'
+    } else {
+      updateMessage.value = result.error || '更新未启动'
+    }
   } catch {
-    updateMessage.value = '自动更新启动失败，请在服务器手动执行更新命令。'
+    updateMessage.value = action === 'download' ? '下载失败，请稍后重试。' : '重启失败，请在服务器检查服务状态。'
   } finally {
     applyingUpdate.value = false
-  }
-}
-
-async function copyUpdateCommand() {
-  if (!navigator.clipboard) return
-  try {
-    await navigator.clipboard.writeText(updateCommand.value)
-    copiedCommand.value = true
-    window.setTimeout(() => { copiedCommand.value = false }, 1800)
-  } catch {
-    copiedCommand.value = false
   }
 }
 
@@ -103,24 +104,25 @@ onMounted(checkUpdate)
       </div>
       <div v-if="updateOpen" class="update-panel">
         <div class="update-head">
-          <strong v-if="versionInfo?.update_available">发现 {{ latestVersionLabel }}</strong>
-          <strong v-else>当前 {{ currentVersionLabel }}</strong>
-          <button type="button" @click="updateOpen = false">×</button>
+          <span>当前版本</span>
+          <button class="icon-button" type="button" title="重新检查" @click="checkUpdate" :disabled="checkingUpdate">↻</button>
         </div>
-        <p v-if="versionInfo?.update_available && versionInfo?.apply_enabled">检测到新版本，可直接拉取发布镜像并自动重启服务。</p>
-        <p v-else-if="versionInfo?.update_available">检测到新版本，请在服务器执行更新命令完成镜像更新。</p>
-        <p v-else-if="versionInfo?.error === 'update_check_not_configured'">尚未配置更新检查地址。</p>
-        <p v-else-if="versionInfo?.error">更新检查暂不可用：{{ versionInfo.error }}</p>
-        <p v-else>{{ checkingUpdate ? '正在检查更新...' : '已是当前配置源的最新版本。' }}</p>
-        <div v-if="versionInfo?.notes" class="update-notes">{{ versionInfo.notes }}</div>
-        <p v-if="updateMessage">{{ updateMessage }}</p>
-        <div class="update-actions">
-          <button v-if="versionInfo?.update_available && versionInfo?.apply_enabled" class="btn primary" type="button" @click="applyUpdate" :disabled="applyingUpdate">{{ applyingUpdate ? '更新中...' : '自动更新' }}</button>
-          <a v-if="versionInfo?.download_url" class="btn" :href="versionInfo.download_url" target="_blank" rel="noreferrer">下载更新</a>
-          <a v-if="versionInfo?.release_url" class="btn" :href="versionInfo.release_url" target="_blank" rel="noreferrer">发布页</a>
-          <button class="btn" type="button" @click="checkUpdate" :disabled="checkingUpdate">重新检查</button>
+        <div class="version-display">
+          <strong>{{ currentVersionLabel }}</strong>
+          <span class="status-dot" :class="{ update: hasUpdate }">{{ hasUpdate ? '!' : '✓' }}</span>
         </div>
-        <button class="update-command" type="button" @click="copyUpdateCommand">{{ copiedCommand ? '已复制' : updateCommand }}</button>
+        <p v-if="versionInfo?.error === 'update_check_not_configured'">尚未配置更新检查地址</p>
+        <p v-else-if="versionInfo?.error">更新检查暂不可用</p>
+        <p v-else-if="hasUpdate">发现新版本 {{ latestVersionLabel }}</p>
+        <p v-else>{{ checkingUpdate ? '正在检查更新...' : '已是最新版本' }}</p>
+        <p v-if="updateMessage" class="update-message">{{ updateMessage }}</p>
+        <button v-if="hasUpdate && versionInfo?.apply_enabled" class="update-primary" type="button" @click="applyUpdate" :disabled="applyingUpdate">
+          {{ primaryUpdateText }}
+        </button>
+        <a v-if="versionInfo?.release_url" class="release-link" :href="versionInfo.release_url" target="_blank" rel="noreferrer">
+          <span>GitHub</span>
+          查看发布
+        </a>
       </div>
       <nav class="nav">
         <router-link v-for="item in nav" :key="item.path" :to="item.path" :class="{ active: route.path === item.path }">
