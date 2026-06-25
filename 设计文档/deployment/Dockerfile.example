@@ -1,22 +1,28 @@
 # syntax=docker/dockerfile:1
+
 FROM node:22-alpine AS frontend-build
 WORKDIR /src/frontend
 COPY frontend/package*.json ./
-RUN npm ci
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 COPY frontend/ ./
 RUN npm run build
 
-FROM python:3.13-slim AS runtime
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+FROM golang:1.23-alpine AS backend-build
+WORKDIR /src/backend
+RUN apk add --no-cache ca-certificates git
+COPY backend/go.mod backend/go.sum* ./
+RUN go mod download
+COPY backend/ ./
+RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/nsh-guild-analytics ./cmd/server
+
+FROM alpine:3.22 AS runtime
+RUN apk add --no-cache ca-certificates tzdata wget && addgroup -S app && adduser -S -G app app
 WORKDIR /app
-RUN useradd -r -u 10001 appuser
-COPY backend/requirements.txt ./backend/requirements.txt
-RUN pip install --no-cache-dir -r backend/requirements.txt
-COPY backend/ ./backend/
-COPY --from=frontend-build /src/frontend/dist ./backend/static/
+COPY --from=backend-build /out/nsh-guild-analytics /app/nsh-guild-analytics
+COPY --from=frontend-build /src/frontend/dist /app/public
 COPY deployment/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh && mkdir -p /app/data /app/backups && chown -R appuser:appuser /app
-USER appuser
+RUN chmod +x /entrypoint.sh && mkdir -p /app/data/uploads /app/backups /app/public && chown -R app:app /app /entrypoint.sh
+USER app
 EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]
+CMD ["/app/nsh-guild-analytics"]

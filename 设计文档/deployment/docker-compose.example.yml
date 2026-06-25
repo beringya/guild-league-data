@@ -1,20 +1,64 @@
+name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}
+
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nsh-guild-analytics
+    container_name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_app
     restart: unless-stopped
-    ports:
-      - "8080:8080"
     env_file:
       - .env
-    volumes:
-      - ./data:/app/data
-      - ./backups:/app/backups
+    environment:
+      LISTEN_ADDR: ":8080"
+      DATABASE_DSN: "postgres://${POSTGRES_USER:-nsh_guild}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nsh_guild_analytics}?sslmode=disable"
+      REDIS_ADDR: "redis:6379"
+    ports:
+      - "${APP_PORT:-18080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app_net
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health')"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 20s
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nsh_guild}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-nsh_guild_analytics}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nsh_guild} -d ${POSTGRES_DB:-nsh_guild_analytics}"]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+
+networks:
+  app_net:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_net
+
+volumes:
+  postgres_data:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_postgres_data
+  redis_data:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_redis_data

@@ -1,41 +1,84 @@
-# 实现验收对照
+# 开发任务计划与验收对照
 
-本文件按设计文档 v1.5-final 对当前代码实现做交付对照。当前环境没有可用本地部署/编译运行环境，因此本轮验证以源码、配置和静态检查为准，未启动 Web 服务、未执行前端构建、未运行测试。
+本清单按最新要求同步：项目技术路线参考 `sub2api`，目标实现为 Go/Gin/Ent + Vue/Vite/TailwindCSS + PostgreSQL/Redis + Docker Compose 独立部署。当前本地没有部署环境，因此本轮验证以源码、配置、文档和脚本静态检查为准。
 
-## 已实现
+## 任务状态
 
-- 项目形态：`backend/` FastAPI + SQLite，`frontend/` React + Vite，`Dockerfile` 单容器多阶段构建，`docker-compose.yml` 暴露 8080。
-- 首次管理员：`backend/app/core/bootstrap.py` 启动时创建 `admin`，生成随机密码并仅在首次初始化日志输出，`force_password_change=1`。
-- 认证安全：`backend/app/api/routes/auth.py` 实现登录、退出、当前用户、改密、失败限流；`backend/app/api/deps.py` 实现 Cookie 会话和 CSRF 校验。
-- 数据库模型：`backend/app/core/models.py` 覆盖用户、会话、设置、帮会、比赛、玩家、统计、评分规则、范围版本、头像和导入日志。
-- CSV 导入：`backend/app/services/csv_import.py` 支持 UTF-8 BOM、UTF-8、GB18030、字段别名、重复表头、空数字警告、非法数字错误、两个帮会校验、未知职业阻止、文件名时间解析。
-- 评分算法：`backend/app/services/analysis.py` 实现 KDA、参团率、伤害占比、职业范围建议、六维标准化、综合分、并列排序、团内 TOP3、双方对比、分团对比、规则化结论和多场聚合辅助函数。
-- 默认职业规则：`backend/app/core/defaults.py` 实现十三个职业的六维槽位与已确认权重。
-- 业务 API：`/api/battles/import/preview`、`/confirm`、历史、概览、排名、玩家详情、团内 TOP3、帮会对比、分团对比、多场总榜、设置、评分规则、范围版本、备份、头像兜底。
-- 前端页面：登录、首页概览、个人排名/多场总榜、玩家详情、团内 TOP3、帮会对比、分团对比、导入、历史、设置。
-- 视觉资源：正式前端复用 `设计文档/assets` 中的品牌、背景和图标资源，样式主题位于 `frontend/src/styles/app.css`。
-- 测试样例：`backend/tests/` 覆盖样例 CSV 人数、重复表头、职业数量、文件名时间推断、KDA/参团率/综合分有限值和素问权重。
+| 模块 | 状态 | 验收口径 |
+|---|---|---|
+| 技术栈调整 | 已完成 | 旧 FastAPI/React 实现归档到 `legacy/fastapi-react/`，新 `backend/` 与 `frontend/` 指向 Go/Vue。 |
+| 后端工程 | 已完成 | Go 服务包含 Gin 路由、配置加载、PostgreSQL 连接、Redis 连接、启动引导和 API 分层。 |
+| Ent 模型 | 已完成 | `ent/schema` 覆盖用户、会话、帮会、比赛、统计、评分规则、范围版本、头像与导入日志。 |
+| 数据迁移 | 已完成 | SQL migration 可初始化 PostgreSQL 表、索引、约束和默认设置。 |
+| 认证安全 | 已完成 | 管理员随机初始密码、强制改密、Redis 会话、CSRF、登出、改密撤销会话、登录限流。 |
+| CSV 导入 | 已完成 | UTF-8 BOM/UTF-8/GB18030、重复表头、字段别名、两个帮会、十三职业、预览缓存、确认入库。 |
+| 分析算法 | 已完成 | KDA、参团率、伤害占比、职业区间标准化、范围建议、六维综合分、并列排名、多场聚合。 |
+| API 接口 | 已完成 | 覆盖设计文档 OpenAPI 轮廓中的登录、导入、比赛、排名、对比、设置、规则、头像、备份接口。 |
+| 前端工程 | 已完成 | Vue 3 + Vite + TypeScript + TailwindCSS，复用设计资源，包含路由、状态、API 客户端和页面。 |
+| 图表与页面 | 已完成 | 登录、概览、个人排名、玩家详情、团内 TOP3、对手对比、团队对比、导入、历史、设置。 |
+| Docker 部署 | 已完成 | `docker-compose.yml` 默认启动 app/postgres/redis，独立网络和卷，端口默认 18080。 |
+| 自动化安装 | 已完成 | `scripts/install.sh` 自动生成密钥、配置 `.env`、创建 systemd 服务、启动 Compose 并输出运维提示。 |
+| 打包卸载 | 已完成 | `scripts/package.sh` 生成离线包，`scripts/uninstall.sh` 默认保留数据并支持显式清理。 |
+| Gitee 规范 | 已完成 | README、LICENSE、CONTRIBUTING、Issue/PR 模板、忽略规则与交付说明完整。 |
 
-## 预留但已留接口
+## 后端验收项
 
-- 玩家/职业头像上传已支持 PNG/JPG/WebP 保存到 `data/avatars/`，默认稳定随机 SVG 头像仍作为兜底。
-- 指定比赛使用当前启用评分规则与职业范围重新分析已接入历史页操作。
-- 手动生成范围建议与发布冻结范围版本已接入设置页操作。
+- `GET /api/health` 返回应用、PostgreSQL、Redis 健康状态。
+- `POST /api/auth/login` 成功后设置 HttpOnly Cookie；失败触发限流计数。
+- `GET /api/auth/me` 返回当前管理员信息与是否需要改密。
+- `POST /api/auth/change-password` 修改密码后撤销旧会话。
+- `POST /api/battles/import/preview` 只解析和校验 CSV，不入库。
+- `POST /api/battles/import/confirm` 按预览 token 入库并生成分析结果。
+- `GET /api/battles`、`GET /api/battles/{id}`、`DELETE /api/battles/{id}` 管理历史比赛。
+- `GET /api/battles/{id}/overview` 提供首页总览和双方关键指标。
+- `GET /api/battles/{id}/rankings` 支持 side/career/team/search/page。
+- `GET /api/battles/{id}/players/{stat_id}` 返回六维分析、同职业比较和评分解释。
+- `GET /api/battles/{id}/team-top3` 按 `所在团长` 展示每团前三名个人。
+- `GET /api/battles/{id}/guild-comparison` 返回双方总量、人均、职业人均和结论。
+- `GET /api/battles/{id}/squad-comparison` 返回双方分团汇总与人均对比。
+- `GET /api/rankings/history` 支持多场历史榜、日期、帮会、职业、最低场次、排序和分页。
+- `GET/PUT /api/settings` 管理默认本帮会、阈值、备份、会话等设置。
+- `GET/POST /api/scoring-rules` 和 `POST /api/scoring-rules/{version}/publish` 管理职业规则版本。
+- `POST /api/scoring-rules/range-suggestions` 生成职业范围建议。
+- `GET/POST /api/scoring-ranges` 查看和发布冻结范围版本。
+- `PUT/DELETE /api/players/{id}/avatar` 与 `PUT/DELETE /api/careers/{career}/avatar` 管理头像。
+- `POST /api/backups` 创建数据库备份或导出包。
+
+## 前端验收项
+
+- 登录页能处理首次管理员改密提示、错误提示和加载状态。
+- 主界面固定侧栏包含概览、排名、团内 TOP3、对手对比、团队对比、个人分析、导入、历史、设置。
+- 概览页展示最新比赛、双方 KPI、职业结构、优势不足和导入入口。
+- 个人排名页支持单场/多场切换、帮会、职业、分团、搜索、分页和排序。
+- 玩家详情页展示六维雷达、单项贡献、同职业本帮/对手平均、百分位和评分解释。
+- 团内 TOP3 页按每个 `所在团长` 分组展示前三名，不误导为团队名次。
+- 对手帮会对比页展示总量、人均、职业人均和结论。
+- 团队数据对比页展示双方分团汇总和人均指标。
+- 数据导入页包含文件选择、解析预览、帮会选择、校验结果和确认入库。
+- 历史页可查看、删除、重新分析和进入历史总榜。
+- 设置页可管理职业六维范围、规则版本、默认本帮会、头像、备份和管理员安全。
+
+## 部署验收项
+
+- `.env.example` 包含 `APP_PORT`、`GIN_MODE`、`DATABASE_DSN`、`REDIS_ADDR`、`POSTGRES_*`、`SESSION_SECRET` 等必需配置。
+- `Dockerfile` 使用前端构建阶段、Go 构建阶段和最小运行镜像阶段。
+- `docker-compose.yml` 使用固定项目内服务名 `app`、`postgres`、`redis`，并创建项目专属卷。
+- 安装脚本可在离线包目录执行，不要求宿主机已有 PostgreSQL/Redis。
+- systemd 服务只管理本项目 Compose，不影响其他项目容器。
 
 ## 未执行的本地验证
 
+- 未执行 `go test ./...`。
 - 未执行 `npm install` / `npm run build`。
-- 未执行 `pytest`。
-- 未启动 `uvicorn` 或 Docker Compose。
-- 尝试 `python -m compileall backend` 时，当前沙箱无法访问 `python.exe`，因此未完成语法编译检查。
+- 未启动 `docker compose up -d --build`。
+- 未进行浏览器端交互验收。
 
-后续在具备部署环境后建议执行：
+后续具备部署环境后建议执行：
 
 ```bash
 cp .env.example .env
-docker compose build
-docker compose up -d
-docker compose logs app
+docker compose up -d --build
+docker compose logs -f app
 ```
 
-并用 `设计文档/data/sample_battle.csv` 或 `联赛初始数据/` 中的 CSV 完成导入回归。
+并使用 `设计文档/data/sample_battle.csv` 或 `联赛初始数据/` 中的 CSV 完成导入回归。

@@ -1,25 +1,85 @@
+name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}
+
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_app
     restart: unless-stopped
-    ports:
-      - "${APP_PORT:-18080}:8080"
     env_file:
       - .env
+    environment:
+      LISTEN_ADDR: ":8080"
+      DATABASE_DSN: "postgres://${POSTGRES_USER:-nsh_guild}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nsh_guild_analytics}?sslmode=disable"
+      REDIS_ADDR: "redis:6379"
+      UPLOAD_DIR: "/app/data/uploads"
+      BACKUP_DIR: "/app/backups"
+      STATIC_DIR: "/app/public"
+    ports:
+      - "${APP_PORT:-18080}:8080"
     volumes:
-      - ${APP_DATA_DIR:-./data}:/app/data
-      - ${APP_BACKUP_DIR:-./backups}:/app/backups
+      - app_uploads:/app/data/uploads
+      - app_backups:/app/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
-      - nsh-guild-analytics
+      - app_net
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health')"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 20s
+      start_period: 30s
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nsh_guild}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-nsh_guild_analytics}
+      TZ: ${TZ:-Asia/Shanghai}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nsh_guild} -d ${POSTGRES_DB:-nsh_guild_analytics}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
-  nsh-guild-analytics:
+  app_net:
     name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_net
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_postgres_data
+  redis_data:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_redis_data
+  app_uploads:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_uploads
+  app_backups:
+    name: ${COMPOSE_PROJECT_NAME:-nsh-guild-analytics}_backups

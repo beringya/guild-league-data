@@ -14,7 +14,7 @@ copy_item() {
   cp -a "$ROOT/$1" "$PKG_DIR/$1"
 }
 
-for item in backend frontend deployment scripts Dockerfile docker-compose.yml docker-compose.postgres.yml .env.example README.md DEVELOPMENT_PLAN.md IMPLEMENTATION_CHECKLIST.md LICENSE .dockerignore; do
+for item in backend frontend deployment scripts Dockerfile docker-compose.yml docker-compose.postgres.yml .env.example README.md DEVELOPMENT_PLAN.md IMPLEMENTATION_CHECKLIST.md LICENSE CONTRIBUTING.md .dockerignore .gitignore .gitee; do
   [ -e "$ROOT/$item" ] && copy_item "$item"
 done
 

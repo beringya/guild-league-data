@@ -1,5 +1,5 @@
 #!/bin/sh
 set -eu
 
-mkdir -p /app/data/uploads /app/backups
+mkdir -p "${UPLOAD_DIR:-/app/data/uploads}" "${BACKUP_DIR:-/app/backups}" "${STATIC_DIR:-/app/public}"
 exec "$@"

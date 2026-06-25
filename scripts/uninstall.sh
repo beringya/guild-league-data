@@ -18,15 +18,24 @@ systemctl daemon-reload || true
 if [ -d "$INSTALL_DIR" ]; then
   cd "$INSTALL_DIR"
   if docker compose version >/dev/null 2>&1; then
-    docker compose -p "$COMPOSE_PROJECT_NAME" down
+    if [ "$REMOVE_DATA" = "true" ]; then
+      docker compose -p "$COMPOSE_PROJECT_NAME" down -v
+    else
+      docker compose -p "$COMPOSE_PROJECT_NAME" down
+    fi
   elif command -v docker-compose >/dev/null 2>&1; then
-    docker-compose -p "$COMPOSE_PROJECT_NAME" down
+    if [ "$REMOVE_DATA" = "true" ]; then
+      docker-compose -p "$COMPOSE_PROJECT_NAME" down -v
+    else
+      docker-compose -p "$COMPOSE_PROJECT_NAME" down
+    fi
   fi
 fi
 
 if [ "$REMOVE_DATA" = "true" ]; then
+  echo "即将删除安装目录和本项目 Docker 卷：$INSTALL_DIR"
   rm -rf "$INSTALL_DIR"
-  echo "已删除安装目录和数据：$INSTALL_DIR"
+  echo "已删除安装目录和数据。"
 else
-  echo "已停止服务，保留数据目录：$INSTALL_DIR"
+  echo "已停止服务，默认保留安装目录和 Docker 数据卷：$INSTALL_DIR"
 fi

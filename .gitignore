@@ -10,14 +10,22 @@ __pycache__/
 node_modules/
 frontend/dist/
 frontend/.vite/
+frontend/coverage/
 
 .env
 data/app.db
 data/app.db-*
+*.sqlite
+*.sqlite3
+postgres/
+redis/
 data/uploads/*
 !data/uploads/.gitkeep
 backups/*
 !backups/.gitkeep
 
+backend/bin/
+backend/tmp/
+*.exe
 *.log
 *.tmp

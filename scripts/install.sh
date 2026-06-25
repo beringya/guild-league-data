@@ -5,7 +5,6 @@ APP_NAME="nsh-guild-analytics"
 INSTALL_DIR="${INSTALL_DIR:-/opt/${APP_NAME}}"
 APP_PORT="${APP_PORT:-18080}"
 COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-${APP_NAME}}"
-USE_POSTGRES="${USE_POSTGRES:-false}"
 REPO_URL="${REPO_URL:-}"
 
 need_cmd() {
@@ -34,6 +33,16 @@ random_secret() {
   fi
 }
 
+replace_env() {
+  local key="$1"
+  local value="$2"
+  if grep -q "^${key}=" .env; then
+    sed -i "s|^${key}=.*|${key}=${value}|" .env
+  else
+    printf '%s=%s\n' "$key" "$value" >> .env
+  fi
+}
+
 if [ "$(id -u)" -ne 0 ]; then
   echo "请使用 root 执行安装脚本。"
   exit 1
@@ -53,24 +62,30 @@ if [ -n "$REPO_URL" ]; then
     git pull --ff-only
   fi
 else
-  echo "使用当前目录中的安装包文件。"
+  echo "使用当前目录中的离线安装包文件。"
 fi
 
 mkdir -p data/uploads backups
 if [ ! -f ".env" ]; then
   cp .env.example .env
-  sed -i "s|SESSION_SECRET=.*|SESSION_SECRET=$(random_secret)|" .env
-  sed -i "s|POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=$(random_secret)|" .env
 fi
 
-sed -i "s|APP_PORT=.*|APP_PORT=${APP_PORT}|" .env
-sed -i "s|COMPOSE_PROJECT_NAME=.*|COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}|" .env
+POSTGRES_USER_VALUE="$(grep '^POSTGRES_USER=' .env | cut -d= -f2- || true)"
+POSTGRES_USER_VALUE="${POSTGRES_USER_VALUE:-nsh_guild}"
+POSTGRES_DB_VALUE="$(grep '^POSTGRES_DB=' .env | cut -d= -f2- || true)"
+POSTGRES_DB_VALUE="${POSTGRES_DB_VALUE:-nsh_guild_analytics}"
+POSTGRES_PASSWORD_VALUE="${POSTGRES_PASSWORD:-$(random_secret)}"
+SESSION_SECRET_VALUE="${SESSION_SECRET:-$(random_secret)}"
 
-if [ "$USE_POSTGRES" = "true" ]; then
-  $COMPOSE_CMD -p "$COMPOSE_PROJECT_NAME" -f docker-compose.yml -f docker-compose.postgres.yml up -d --build
-else
-  $COMPOSE_CMD -p "$COMPOSE_PROJECT_NAME" up -d --build
-fi
+replace_env APP_PORT "$APP_PORT"
+replace_env COMPOSE_PROJECT_NAME "$COMPOSE_PROJECT_NAME"
+replace_env POSTGRES_USER "$POSTGRES_USER_VALUE"
+replace_env POSTGRES_DB "$POSTGRES_DB_VALUE"
+replace_env POSTGRES_PASSWORD "$POSTGRES_PASSWORD_VALUE"
+replace_env SESSION_SECRET "$SESSION_SECRET_VALUE"
+replace_env DATABASE_DSN "postgres://${POSTGRES_USER_VALUE}:${POSTGRES_PASSWORD_VALUE}@postgres:5432/${POSTGRES_DB_VALUE}?sslmode=disable"
+
+$COMPOSE_CMD -p "$COMPOSE_PROJECT_NAME" up -d --build
 
 cat >/etc/systemd/system/${APP_NAME}.service <<EOF
 [Unit]

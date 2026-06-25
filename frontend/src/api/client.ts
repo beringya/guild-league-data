@@ -1,43 +1,54 @@
-export type ApiError = Error & { status?: number };
+import type { ImportPreview } from '../types'
 
-const API_BASE = "/api";
+const csrfHeader = 'X-CSRF-Token'
 
-export function csrfToken(): string {
-  const cookie = document.cookie.split("; ").find((item) => item.startsWith("nsh_csrf="));
-  return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+export class ApiError extends Error {
+  status: number
+  payload: unknown
+
+  constructor(status: number, payload: unknown) {
+    super(`API request failed: ${status}`)
+    this.status = status
+    this.payload = payload
+  }
 }
 
-export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const headers = new Headers(options.headers);
-  if (!(options.body instanceof FormData) && options.body !== undefined) {
-    headers.set("Content-Type", "application/json");
+export function getCSRFToken() {
+  const match = document.cookie.match(/(?:^|;\s*)nsh_csrf=([^;]+)/)
+  return match ? decodeURIComponent(match[1]) : ''
+}
+
+async function request<T>(url: string, init: RequestInit = {}): Promise<T> {
+  const headers = new Headers(init.headers)
+  if (!(init.body instanceof FormData) && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json')
   }
-  const method = (options.method || "GET").toUpperCase();
-  if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
-    headers.set("X-CSRF-Token", csrfToken());
+  const method = (init.method || 'GET').toUpperCase()
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+    headers.set(csrfHeader, getCSRFToken())
   }
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-    credentials: "include"
-  });
+  const response = await fetch(url, { ...init, headers, credentials: 'include' })
+  const text = await response.text()
+  const payload = text ? JSON.parse(text) : null
   if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    const error = new Error(payload.detail || "请求失败") as ApiError;
-    error.status = response.status;
-    throw error;
+    throw new ApiError(response.status, payload)
   }
-  return response.json() as Promise<T>;
+  return payload as T
 }
 
-export function postJson<T>(path: string, body: unknown): Promise<T> {
-  return api<T>(path, { method: "POST", body: JSON.stringify(body) });
-}
-
-export function putJson<T>(path: string, body: unknown): Promise<T> {
-  return api<T>(path, { method: "PUT", body: JSON.stringify(body) });
-}
-
-export function upload<T>(path: string, data: FormData): Promise<T> {
-  return api<T>(path, { method: "POST", body: data });
+export const api = {
+  get: <T>(url: string) => request<T>(url),
+  post: <T>(url: string, body?: unknown) => request<T>(url, { method: 'POST', body: body === undefined ? undefined : JSON.stringify(body) }),
+  put: <T>(url: string, body?: unknown) => request<T>(url, { method: 'PUT', body: body === undefined ? undefined : JSON.stringify(body) }),
+  del: <T>(url: string) => request<T>(url, { method: 'DELETE' }),
+  uploadPreview: (file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return request<ImportPreview>('/api/battles/import/preview', { method: 'POST', body: form, headers: { [csrfHeader]: getCSRFToken() } })
+  },
+  uploadAvatar: (url: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return request<{ asset_path: string }>(url, { method: 'PUT', body: form, headers: { [csrfHeader]: getCSRFToken() } })
+  }
 }

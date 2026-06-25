@@ -60,7 +60,7 @@ paths:
     put: {summary: 设置职业默认头像}
     delete: {summary: 删除职业默认头像}
   /api/backups:
-    post: {summary: 手动备份 SQLite 数据库}
+    post: {summary: 手动创建 PostgreSQL 逻辑备份或元数据备份}
 
   /api/scoring-rules/{version}/publish:
     post: {summary: 管理员确认并发布职业范围与权重版本，发布后冻结}
